@@ -68,7 +68,13 @@
     <module>org.openhab.binding.urtsi</module>
     <module>org.openhab.binding.vitotronic</module>
     <module>org.openhab.binding.yamahareceiver</module>
+<<<<<<< Updated upstream
     <module>org.openhab.binding.zway</module>
+=======
+    <module>org.openhab.binding.systeminfo</module>
+    <module>org.openhab.binding.systeminfo.test</module>
+    <module>org.openhab.binding.pentair.easytouch</module>
+>>>>>>> Stashed changes
   </modules>
 
 </project>
