@@ -1,0 +1,140 @@
+2016-06-30 20:12:07 DEBUG o.o.b.i.i.d.ModemDBBuilder[:104]- got all link records.
+2016-06-30 20:12:07 DEBUG o.o.b.i.i.d.ModemDBBuilder[:130]- MDB ------- start of modem link records ------------------
+2016-06-30 20:12:07 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 27.C0.0C: CTRL group: 00 data1: 02 data2: 38 data3: 38
+2016-06-30 20:12:07 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 27.C0.0C: CTRL group: 13 data1: 02 data2: 38 data3: 38
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 27.C0.0C: CTRL group: 19 data1: 02 data2: 38 data3: 38
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 27.C0.0C: RESP group: 01 data1: 02 data2: 38 data3: 38
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:142]- MDB -----
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 1F.B2.ED: RESP group: 01 data1: 02 data2: 2A data3: 2A
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:142]- MDB -----
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 24.35.44: RESP group: 01 data1: 02 data2: 1A data3: 1A
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:142]- MDB -----
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 1D.E6.E0: RESP group: 01 data1: 01 data2: 20 data3: 20
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:142]- MDB -----
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 29.29.9D: RESP group: 01 data1: 02 data2: 1A data3: 1A
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:142]- MDB -----
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 20.B9.2E: CTRL group: 00 data1: 02 data2: 09 data3: 09
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 20.B9.2E: CTRL group: 1A data1: 02 data2: 09 data3: 09
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 20.B9.2E: CTRL group: 19 data1: 02 data2: 09 data3: 09
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 20.B9.2E: CTRL group: 1B data1: 02 data2: 09 data3: 09
+2016-06-30 20:12:08 INFO  o.o.b.i.InsteonPLMActiveBinding[:125]- Item: InsteonOnOff27BA12 got command OFF
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.device.InsteonDevice[:168]- processing command OFF features: 2
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 20.B9.2E: RESP group: 01 data1: 02 data2: 09 data3: 09
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:142]- MDB -----
+2016-06-30 20:12:08 INFO  o.o.b.i.i.d.CommandHandler[:165]- LightOnOffCommandHandler: sent msg to switch 27.BA.12 off
+2016-06-30 20:12:08 INFO  o.o.b.i.i.d.CommandHandler[:180]- Sending message to 27.BA.12
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 27.AB.62: CTRL group: 00 data1: 02 data2: 38 data3: 38
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.device.InsteonDevice[:374]- gave up waiting for query reply from device 27.BA.12
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 27.AB.62: CTRL group: 11 data1: 02 data2: 38 data3: 38
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 27.AB.62: CTRL group: 19 data1: 02 data2: 38 data3: 38
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.device.InsteonDevice[:379]- qe taken off direct: GenericSwitch(1:1:6) OUT:Cmd:0x62|toAddress:27.BA.12|messageFlags:0x0F=DIRECT:3:3|command1:0x13|command2:0x00|
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.device.InsteonDevice[:399]- next request queue processed in 2000 msec, quiettime = 2000
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 27.AB.62: RESP group: 01 data1: 02 data2: 38 data3: 38
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:142]- MDB -----
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 20.B9.39: CTRL group: 00 data1: 02 data2: 09 data3: 09
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 20.B9.39: CTRL group: 19 data1: 02 data2: 09 data3: 09
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 20.B9.39: CTRL group: 1A data1: 02 data2: 09 data3: 09
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 20.B9.39: RESP group: 01 data1: 02 data2: 09 data3: 09
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:142]- MDB -----
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 27.BA.12: CTRL group: 00 data1: 02 data2: 38 data3: 38
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 27.BA.12: CTRL group: 13 data1: 02 data2: 38 data3: 38
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 27.BA.12: CTRL group: 19 data1: 02 data2: 38 data3: 38
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 27.BA.12: RESP group: 01 data1: 02 data2: 38 data3: 38
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:142]- MDB -----
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 21.47.CB: CTRL group: 1A data1: 02 data2: 06 data3: 06
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 21.47.CB: CTRL group: 00 data1: 02 data2: 06 data3: 06
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 21.47.CB: CTRL group: 19 data1: 02 data2: 06 data3: 06
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 21.47.CB: RESP group: 01 data1: 02 data2: 06 data3: 06
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:142]- MDB -----
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 27.E3.8A: CTRL group: 00 data1: 02 data2: 38 data3: 38
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 27.E3.8A: RESP group: 01 data1: 02 data2: 38 data3: 38
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:142]- MDB -----
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 2F.BD.CF: CTRL group: 1A data1: 01 data2: 41 data3: 41
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 2F.BD.CF: CTRL group: 19 data1: 01 data2: 41 data3: 41
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 2F.BD.CF: CTRL group: 18 data1: 01 data2: 41 data3: 41
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 2F.BD.CF: CTRL group: 13 data1: 01 data2: 41 data3: 41
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 2F.BD.CF: CTRL group: 12 data1: 01 data2: 41 data3: 41
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 2F.BD.CF: CTRL group: 11 data1: 01 data2: 41 data3: 41
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 2F.BD.CF: CTRL group: 00 data1: 01 data2: 41 data3: 41
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 2F.BD.CF: RESP group: 02 data1: 01 data2: 41 data3: 41
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 2F.BD.CF: RESP group: 03 data1: 01 data2: 41 data3: 41
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 2F.BD.CF: RESP group: 04 data1: 01 data2: 41 data3: 41
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 2F.BD.CF: RESP group: 05 data1: 01 data2: 41 data3: 41
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 2F.BD.CF: RESP group: 06 data1: 01 data2: 41 data3: 41
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 2F.BD.CF: RESP group: 07 data1: 01 data2: 41 data3: 41
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 2F.BD.CF: RESP group: 08 data1: 01 data2: 41 data3: 41
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 2F.BD.CF: RESP group: 01 data1: 01 data2: 41 data3: 41
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:142]- MDB -----
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 27.AB.A1: CTRL group: 00 data1: 02 data2: 38 data3: 38
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 27.AB.A1: CTRL group: 12 data1: 02 data2: 38 data3: 38
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 27.AB.A1: CTRL group: 13 data1: 02 data2: 38 data3: 38
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 27.AB.A1: CTRL group: 19 data1: 02 data2: 38 data3: 38
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 27.AB.A1: RESP group: 01 data1: 02 data2: 38 data3: 38
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:142]- MDB -----
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 29.CF.4D: RESP group: 01 data1: 00 data2: 00 data3: 00
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 29.CF.4D: RESP group: 01 data1: 00 data2: 00 data3: 00
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 29.CF.4D: RESP group: 01 data1: 00 data2: 00 data3: 00
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 29.CF.4D: RESP group: 01 data1: 00 data2: 00 data3: 00
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 29.CF.4D: RESP group: 01 data1: 00 data2: 00 data3: 00
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 29.CF.4D: RESP group: 01 data1: 00 data2: 00 data3: 00
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 29.CF.4D: RESP group: 01 data1: 00 data2: 00 data3: 00
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:137]- MDB 29.CF.4D: RESP group: 01 data1: 00 data2: 00 data3: 00
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:142]- MDB -----
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.d.ModemDBBuilder[:144]- MDB ---------------- end of modem link records -----------
+2016-06-30 20:12:08 INFO  o.o.b.i.InsteonPLMActiveBinding[:595]- modem database has 14 entries!
+2016-06-30 20:12:08 DEBUG o.o.b.i.InsteonPLMActiveBinding[:600]- modem db entry: 27.C0.0C
+2016-06-30 20:12:08 DEBUG o.o.b.i.InsteonPLMActiveBinding[:600]- modem db entry: 1F.B2.ED
+2016-06-30 20:12:08 DEBUG o.o.b.i.InsteonPLMActiveBinding[:600]- modem db entry: 24.35.44
+2016-06-30 20:12:08 DEBUG o.o.b.i.InsteonPLMActiveBinding[:600]- modem db entry: 1D.E6.E0
+2016-06-30 20:12:08 DEBUG o.o.b.i.InsteonPLMActiveBinding[:600]- modem db entry: 29.29.9D
+2016-06-30 20:12:08 DEBUG o.o.b.i.InsteonPLMActiveBinding[:600]- modem db entry: 20.B9.2E
+2016-06-30 20:12:08 DEBUG o.o.b.i.InsteonPLMActiveBinding[:600]- modem db entry: 27.AB.62
+2016-06-30 20:12:08 DEBUG o.o.b.i.InsteonPLMActiveBinding[:600]- modem db entry: 20.B9.39
+2016-06-30 20:12:08 DEBUG o.o.b.i.InsteonPLMActiveBinding[:600]- modem db entry: 27.BA.12
+2016-06-30 20:12:08 DEBUG o.o.b.i.InsteonPLMActiveBinding[:600]- modem db entry: 21.47.CB
+2016-06-30 20:12:08 DEBUG o.o.b.i.InsteonPLMActiveBinding[:600]- modem db entry: 27.E3.8A
+2016-06-30 20:12:08 DEBUG o.o.b.i.InsteonPLMActiveBinding[:600]- modem db entry: 2F.BD.CF
+2016-06-30 20:12:08 DEBUG o.o.b.i.InsteonPLMActiveBinding[:600]- modem db entry: 27.AB.A1
+2016-06-30 20:12:08 DEBUG o.o.b.i.InsteonPLMActiveBinding[:600]- modem db entry: 29.CF.4D
+2016-06-30 20:12:08 INFO  o.o.b.i.InsteonPLMActiveBinding[:611]- device 27.BA.12 found in the modem database and the modem controls groups [0x00,0x13,0x19] and responds to groups [0x01].
+2016-06-30 20:12:08 DEBUG o.o.b.i.internal.driver.Poller[:64]- start polling device 27.BA.12|lastheardfrom->GenericLastTime(0:0:0)|switch->GenericSwitch(1:1:6)
+2016-06-30 20:12:08 INFO  o.o.b.i.InsteonPLMActiveBinding[:611]- device 27.E3.8A found in the modem database and the modem controls groups [0x00] and responds to groups [0x01].
+2016-06-30 20:12:08 DEBUG o.o.b.i.i.device.InsteonDevice[:370]- still waiting for query reply from 27.BA.12 for another 4442 usec
+2016-06-30 20:12:08 DEBUG o.o.b.i.internal.driver.Poller[:64]- start polling device 27.E3.8A|lastheardfrom->GenericLastTime(0:0:0)|switch->GenericSwitch(1:1:6)
+2016-06-30 20:12:08 INFO  o.o.b.i.InsteonPLMActiveBinding[:621]- device 27.C0.0C found in the modem database, but is not configured as an item and the modem controls groups [0x00,0x13,0x19] and responds to groups [0x01].
+2016-06-30 20:12:08 INFO  o.o.b.i.InsteonPLMActiveBinding[:621]- device 1F.B2.ED found in the modem database, but is not configured as an item and the modem responds to groups [0x01].
+2016-06-30 20:12:08 INFO  o.o.b.i.InsteonPLMActiveBinding[:621]- device 24.35.44 found in the modem database, but is not configured as an item and the modem responds to groups [0x01].
+2016-06-30 20:12:08 INFO  o.o.b.i.InsteonPLMActiveBinding[:621]- device 1D.E6.E0 found in the modem database, but is not configured as an item and the modem responds to groups [0x01].
+2016-06-30 20:12:08 INFO  o.o.b.i.InsteonPLMActiveBinding[:621]- device 29.29.9D found in the modem database, but is not configured as an item and the modem responds to groups [0x01].
+2016-06-30 20:12:08 INFO  o.o.b.i.InsteonPLMActiveBinding[:621]- device 20.B9.2E found in the modem database, but is not configured as an item and the modem controls groups [0x00,0x19,0x1A,0x1B] and responds to groups [0x01].
+2016-06-30 20:12:08 INFO  o.o.b.i.InsteonPLMActiveBinding[:621]- device 27.AB.62 found in the modem database, but is not configured as an item and the modem controls groups [0x00,0x11,0x19] and responds to groups [0x01].
+2016-06-30 20:12:08 INFO  o.o.b.i.InsteonPLMActiveBinding[:621]- device 20.B9.39 found in the modem database, but is not configured as an item and the modem controls groups [0x00,0x19,0x1A] and responds to groups [0x01].
+2016-06-30 20:12:08 INFO  o.o.b.i.InsteonPLMActiveBinding[:621]- device 21.47.CB found in the modem database, but is not configured as an item and the modem controls groups [0x00,0x19,0x1A] and responds to groups [0x01].
+2016-06-30 20:12:08 INFO  o.o.b.i.InsteonPLMActiveBinding[:621]- device 2F.BD.CF found in the modem database, but is not configured as an item and the modem controls groups [0x00,0x11,0x12,0x13,0x18,0x19,0x1A] and responds to groups [0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08].
+2016-06-30 20:12:08 INFO  o.o.b.i.InsteonPLMActiveBinding[:621]- device 27.AB.A1 found in the modem database, but is not configured as an item and the modem controls groups [0x00,0x12,0x13,0x19] and responds to groups [0x01].
+2016-06-30 20:12:08 INFO  o.o.b.i.InsteonPLMActiveBinding[:621]- device 29.CF.4D found in the modem database, but is not configured as an item and the modem responds to groups [0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01].
+2016-06-30 20:12:08 DEBUG o.o.b.i.internal.driver.Port[:382]- writing (0): OUT:Cmd:0x6A|
+2016-06-30 20:12:08 DEBUG o.o.b.i.internal.driver.Port[:382]- writing (0): OUT:Cmd:0x6A|
+2016-06-30 20:12:08 DEBUG o.o.b.i.internal.driver.Port[:382]- writing (0): OUT:Cmd:0x6A|
+2016-06-30 20:12:08 DEBUG o.o.b.i.internal.driver.Port[:382]- writing (0): OUT:Cmd:0x6A|
+2016-06-30 20:12:08 DEBUG o.o.b.i.internal.driver.Port[:382]- writing (0): OUT:Cmd:0x6A|
+2016-06-30 20:12:08 DEBUG o.o.b.i.internal.driver.Port[:382]- writing (0): OUT:Cmd:0x6A|
+2016-06-30 20:12:08 DEBUG o.o.b.i.internal.driver.Port[:382]- writing (0): OUT:Cmd:0x6A|
+2016-06-30 20:12:08 DEBUG o.o.b.i.internal.driver.Port[:382]- writing (500): OUT:Cmd:0x62|toAddress:27.BA.12|messageFlags:0x0F=DIRECT:3:3|command1:0x13|command2:0x00|
+2016-06-30 20:12:09 DEBUG o.o.b.i.InsteonPLMActiveBinding[:581]- got msg: IN:Cmd:0x50|fromAddress:27.BA.12|toAddress:28.CB.29|messageFlags:0x2B=ACK_OF_DIRECT:3:2|command1:0x13|command2:0x00|
+2016-06-30 20:12:10 DEBUG o.o.b.i.i.device.InsteonDevice[:370]- still waiting for query reply from 27.BA.12 for another 2442 usec
+2016-06-30 20:12:12 DEBUG o.o.b.i.i.device.InsteonDevice[:370]- still waiting for query reply from 27.BA.12 for another 442 usec
+2016-06-30 20:12:13 INFO  o.o.b.i.InsteonPLMActiveBinding[:125]- Item: InsteonOnOff27E38A got command ON
+2016-06-30 20:12:13 DEBUG o.o.b.i.i.device.InsteonDevice[:168]- processing command ON features: 2
+2016-06-30 20:12:13 INFO  o.o.b.i.i.d.CommandHandler[:161]- LightOnOffCommandHandler: sent msg to switch 27.E3.8A to on
+2016-06-30 20:12:13 INFO  o.o.b.i.i.d.CommandHandler[:180]- Sending message to 27.E3.8A
+2016-06-30 20:12:13 DEBUG o.o.b.i.i.device.InsteonDevice[:379]- qe taken off direct: GenericSwitch(1:1:6) OUT:Cmd:0x62|toAddress:27.E3.8A|messageFlags:0x0F=DIRECT:3:3|command1:0x11|command2:0xFF|
+2016-06-30 20:12:13 DEBUG o.o.b.i.i.device.InsteonDevice[:399]- next request queue processed in 2000 msec, quiettime = 2000
+2016-06-30 20:12:13 DEBUG o.o.b.i.internal.driver.Port[:382]- writing (500): OUT:Cmd:0x62|toAddress:27.E3.8A|messageFlags:0x0F=DIRECT:3:3|command1:0x11|command2:0xFF|
+2016-06-30 20:12:14 DEBUG o.o.b.i.InsteonPLMActiveBinding[:581]- got msg: IN:Cmd:0x50|fromAddress:27.E3.8A|toAddress:28.CB.29|messageFlags:0x2B=ACK_OF_DIRECT:3:2|command1:0x11|command2:0xFF|
+2016-06-30 20:12:14 DEBUG o.o.b.i.i.device.InsteonDevice[:374]- gave up waiting for query reply from device 27.BA.12
+2016-06-30 20:12:14 DEBUG o.o.b.i.i.device.InsteonDevice[:379]- qe taken off direct: GenericSwitch(1:1:6) OUT:Cmd:0x62|toAddress:27.BA.12|messageFlags:0x0F=DIRECT:3:3|command1:0x19|command2:0x00|
+2016-06-30 20:12:14 DEBUG o.o.b.i.i.device.InsteonDevice[:399]- next request queue processed in 500 msec, quiettime = 500
+2016-06-30 20:12:14 DEBUG o.o.b.i.internal.driver.Port[:382]- writing (500): OUT:Cmd:0x62|toAddress:27.BA.12|messageFlags:0x0F=DIRECT:3:3|command1:0x19|command2:0x00|
+2016-06-30 20:12:15 DEBUG o.o.b.i.InsteonPLMActiveBinding[:581]- got msg: IN:Cmd:0x50|fromAddress:27.BA.12|toAddress:28.CB.29|messageFlags:0x2B=ACK_OF_DIRECT:3:2|command1:0x00|command2:0x00|
+2016-06-30 20:12:15 DEBUG o.o.b.i.i.d.RequestQueueManager[:132]- device queue for 27.BA.12 is empty!

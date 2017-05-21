@@ -1,0 +1,250 @@
+package org.openhab.binding.pentair.easytouch.internal;
+
+public class Utils {
+
+    public static String getByteStr(int b) {
+        String result = Integer.toHexString(b & 0xFF).toUpperCase();
+        if (result.length() == 1) {
+            result = "0" + result;
+        }
+        return result;
+    }
+
+    public static void printByte(String name, byte b, String suffix) {
+        System.out.print(name + ": ");
+        String value = Utils.getByteStr(b);
+        System.out.print(value + " ");
+        System.out.print(suffix);
+    }
+
+    public static void printBytes(String name, int[] bytes, String suffix) {
+        System.out.print(name + ": ");
+        for (int i = 0; i < bytes.length; i++) {
+            String value = Utils.getByteStr(bytes[i]);
+            System.out.print(value + " ");
+        }
+        System.out.print(suffix);
+    }
+
+    /*
+     * public static void printBytes(String name, byte[] bytes, String suffix) {
+     * System.out.print(name + ": ");
+     * for (int i = 0; i < bytes.length; i++) {
+     * String value = Utils.getByteStr(bytes[i]);
+     * System.out.print(value + " ");
+     * }
+     * System.out.print(suffix);
+     * }
+     */
+    public static String formatCommandBytes(int[] bytes) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < bytes.length; i++) {
+            String digits = Integer.toHexString(bytes[i] & 0xFF).toUpperCase();
+            if (digits.length() == 1) {
+                sb.append("0");
+            }
+            sb.append(digits).append(" ");
+        }
+        if (sb.length() > 0) {
+            sb.setLength(sb.length() - 1);
+        }
+        return sb.toString();
+    }
+
+    public static String formatCommandBytes(byte[] bytes) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < bytes.length; i++) {
+            String digits = Integer.toHexString(bytes[i] & 0xFF).toUpperCase();
+            if (digits.length() == 1) {
+                sb.append("0");
+            }
+            sb.append(digits).append(" ");
+        }
+        if (sb.length() > 0) {
+            sb.setLength(sb.length() - 1);
+        }
+        return sb.toString();
+    }
+
+    public static String getOnOff(int onOff) {
+        return onOff == 0 ? "off" : onOff == 1 ? "on" : "<unknown OnOff state>";
+    }
+
+    public static String getModeName(int mode1, int mode2, int mode3) {
+        if (mode1 == 0x00 && mode2 == 0x00 && mode3 == 0x00) {
+            return "all off";
+        }
+        String result = "";
+        if ((mode1 & 0x01) == 0x01) {
+            result += "Circulation, ";
+        }
+        if ((mode1 & 0x02) == 0x02) {
+            result += "SPA light, ";
+        }
+        if ((mode1 & 0x04) == 0x04) {
+            result += "Pool light, ";
+        }
+        if ((mode1 & 0x08) == 0x08) {
+            result += "Spa Jets, ";
+        }
+        if ((mode1 & 0x10) == 0x10) {
+            result += "Air Blower, ";
+        }
+        if ((mode1 & 0x20) == 0x20) {
+            result += "Pool Vac m1x40, ";
+        }
+        if ((mode1 & 0x40) == 0x40) {
+            result += "Edge Pump, ";
+        }
+        if ((mode1 & 0x80) == 0x80) {
+            result += "Spillway, ";
+        }
+        if ((mode2 & 0x01) == 0x01) {
+            result += "Patio Lights, ";
+        }
+        if ((mode2 & 0x02) == 0x02) {
+            result += "<Mode2 0x02>, ";
+        }
+        if ((mode2 & 0x04) == 0x04) {
+            result += "Pool Vac M2x04, ";
+        }
+        if ((mode2 & 0x08) == 0x08) {
+            result += "Edge Pump+, ";
+        }
+        if ((mode2 & 0x10) == 0x10) {
+            result += "Filter 3200, ";
+        }
+        if ((mode2 & 0x20) == 0x20) {
+            result += "Edge 3200, ";
+        }
+        if ((mode2 & 0x40) == 0x40) {
+            result += "Feature 5, ";
+        }
+        if ((mode2 & 0x80) == 0x80) {
+            result += "Feature 6, ";
+        }
+        if ((mode3 & 0x01) == 0x01) {
+            result += "Feature 7, ";
+        }
+        if ((mode3 & 0x02) == 0x02) {
+            result += "Feature 8, ";
+        }
+        if ((mode3 & 0x04) == 0x04) {
+            result += "<Mode3 0x04>, ";
+        }
+        if ((mode3 & 0x08) == 0x08) {
+            result += "AuxEx, ";
+        }
+        if ((mode3 & 0x10) == 0x10) {
+            result += "<Mode3 0x10>, ";
+        }
+        if ((mode3 & 0x20) == 0x20) {
+            result += "<Mode3 0x20>, ";
+        }
+        if ((mode3 & 0x40) == 0x40) {
+            result += "<Mode3 0x40>, ";
+        }
+        if ((mode3 & 0x80) == 0x80) {
+            result += "<Mode3 0x80>, ";
+        }
+        if (result.length() > 2) {
+            return result.substring(0, result.length() - 2);
+        }
+        return "???";
+    }
+
+    public static String getCircuitName(int circuit) {
+        switch (circuit) {
+            case 0x01:
+                return "Circulation Pump";
+            case 0x02:
+                return "Spa Light";
+            case 0x03:
+                return "Pool Light";
+            case 0x04:
+                return "Spa Jets";
+            case 0x05:
+                return "Air Blower";
+            case 0x06:
+                return "Pool Vac 0x06";
+            case 0x07:
+                return "Edge Pump";
+            case 0x08:
+                return "Spillway";
+            case 0x09:
+                return "Patio Lights";
+            case 0x0B:
+                return "Pool Vac";
+            case 0x0C:
+                return "Edge Pump+";
+            case 0x0D:
+                return "Filter 3200";
+            case 0x0E:
+                return "Edge 3200";
+            case 0x0F:
+                return "Feature 5";
+            case 0x10:
+                return "Feature 6";
+            case 0x11:
+                return "Feature 7";
+            case 0x12:
+                return "Feature 8";
+            case 0x14:
+                return "AuxEx";
+            default:
+                return "<unknown>";
+        }
+    }
+
+    public static String getAddrName(byte addr) {
+        switch (addr & 0xF0) {
+            case 0x00:
+                return addr == 0x0F ? "<all>" : "<unknown>";
+            case 0x10:
+                return "Panel";
+            case 0x20:
+                return (addr & 0x0F) == 2 ? "Wireless" : "Remote " + (addr & 0x0F);
+            case 0x60:
+                return "Pump " + (addr & 0x0F);
+            default:
+                return "<unknown " + Utils.getByteStr(addr) + ">";
+        }
+    }
+
+    public static String getCommand(int cmd) {
+        switch (cmd & 0xFF) {
+            case 0x01:
+                return "Acknowledge";
+            case 0x02:
+                return "PanelStatus";
+            case 0x04:
+                return "SetControl";
+            case 0x06:
+                return "Run";
+            case 0x07:
+                return "PumpStatus";
+            case 0x86:
+                return "SetState";
+            default:
+                return "<command " + Utils.getByteStr(cmd) + " (" + (cmd & 0xFF) + ")>";
+        }
+    }
+
+    public static boolean isPanel(byte addr) {
+        return addr == 0x10;
+    }
+
+    public static boolean isPump(byte addr) {
+        return addr >= 0x60 && addr <= 0x6F;
+    }
+
+    public static void setCheckSum(byte[] bytes) {
+        int msgLast = bytes.length - 2;
+        int checkSum = 0;
+        for (int i = 3; i < msgLast; i++) {
+            checkSum += bytes[i] & 0xFF;
+        }
+        bytes[msgLast] = (byte) (checkSum >> 8);
+        bytes[msgLast + 1] = (byte) (checkSum & 0xFF);
+    }
+}

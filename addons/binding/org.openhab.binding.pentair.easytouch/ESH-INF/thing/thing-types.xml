@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<thing:thing-descriptions bindingId="pentaireasytouch"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:thing="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0"
+        xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/thing-description-1.0.0.xsd">
+
+    <thing-type id="panel">
+        <label>Pentair EasyTouch Panel</label>
+        <description>A Pentair EasyTouch Pool Control</description>
+
+        <channels>
+            <channel id="equipment-circuit1" typeId="equipment-circuit1" />
+            <channel id="equipment-circuit2" typeId="equipment-circuit2" />
+            <channel id="equipment-circuit3" typeId="equipment-circuit3" />
+            <channel id="equipment-circuit4" typeId="equipment-circuit4" />
+            <channel id="equipment-circuit5" typeId="equipment-circuit5" />
+            <channel id="equipment-circuit6" typeId="equipment-circuit6" />
+            <channel id="equipment-circuit7" typeId="equipment-circuit7" />
+            <channel id="equipment-circuit8" typeId="equipment-circuit8" />
+            <channel id="equipment-circuit9" typeId="equipment-circuit9" />
+            <channel id="equipment-circuit10" typeId="equipment-circuit10" />
+            <channel id="temp-airtemp" typeId="temp-airtemp" />
+            <channel id="pumps-pump1" typeId="pumps-pump1" />
+            <channel id="pumps-pump2" typeId="pumps-pump2" />
+            <channel id="pumps-pump3" typeId="pumps-pump3" />
+            <channel id="pumps-pump4" typeId="pumps-pump4" />
+            <channel id="pumps-pump5" typeId="pumps-pump5" />
+            <channel id="pumps-pump6" typeId="pumps-pump6" />
+            <channel id="pumps-pump7" typeId="pumps-pump7" />
+            <channel id="pumps-pump8" typeId="pumps-pump8" />
+            <channel id="watts-pump1" typeId="watts-pump1" />
+            <channel id="watts-pump2" typeId="watts-pump2" />
+            <channel id="watts-pump3" typeId="watts-pump3" />
+            <channel id="watts-pump4" typeId="watts-pump4" />
+            <channel id="watts-pump5" typeId="watts-pump5" />
+            <channel id="watts-pump6" typeId="watts-pump6" />
+            <channel id="watts-pump7" typeId="watts-pump7" />
+            <channel id="watts-pump8" typeId="watts-pump8" />
+            <channel id="rpms-pump1" typeId="rpms-pump1" />
+            <channel id="rpms-pump2" typeId="rpms-pump2" />
+            <channel id="rpms-pump3" typeId="rpms-pump3" />
+            <channel id="rpms-pump4" typeId="rpms-pump4" />
+            <channel id="rpms-pump5" typeId="rpms-pump5" />
+            <channel id="rpms-pump6" typeId="rpms-pump6" />
+            <channel id="rpms-pump7" typeId="rpms-pump7" />
+            <channel id="rpms-pump8" typeId="rpms-pump8" />
+        </channels>
+
+        <config-description>
+            <parameter name="usbPort" type="text" required="true">
+                <label>USB Port Name</label>
+                <description>The host name or IP address of the Pentair EasyTouch Controller (e.g. \dev\tty001).</description>
+            </parameter>
+            <parameter name="binderRemoteAddress" type="text" required="false">
+                <label>Binder Remote Address</label>
+                <description>The remote address that this binder identifies itself as.  (Typically "0x20").</description>
+                <default>0x20</default>
+            </parameter>
+            <parameter name="protocalAdapterAddress" type="text" required="false">
+                <label>Binder Remote Address</label>
+                <description>The remote address that the Pentair Protocol Adapter identifies itself as.  (Typically "0x22").</description>
+                <default>0x22</default>
+            </parameter>
+            <parameter name="pollMilliSeconds" type="integer" required="false">
+                <label>RS-485 serial line polling interval</label>
+                <description>The interval the RS-485 line should be polled in milliseconds</description>
+                <default>1000</default>
+            </parameter>
+        </config-description>
+    </thing-type>
+
+    <!-- Sample Channel Type -->
+    <channel-type id="equipment-circuit1">
+        <item-type>Switch</item-type>
+        <label>Circuit 1</label>
+        <description>The current state of circuit 1 (Spa or Lo-Temp)</description>
+    </channel-type>
+    <channel-type id="equipment-circuit2">
+        <item-type>Switch</item-type>
+        <label>Circuit 2</label>
+        <description>The current state of circuit 2</description>
+    </channel-type>
+    <channel-type id="equipment-circuit3">
+        <item-type>Switch</item-type>
+        <label>Circuit 3</label>
+        <description>The current state of circuit 3</description>
+    </channel-type>
+    <channel-type id="equipment-circuit4">
+        <item-type>Switch</item-type>
+        <label>Circuit 4</label>
+        <description>The current state of circuit 4</description>
+    </channel-type>
+    <channel-type id="equipment-circuit5">
+        <item-type>Switch</item-type>
+        <label>Circuit 5</label>
+        <description>The current state of circuit 5</description>
+    </channel-type>
+    <channel-type id="equipment-circuit6">
+        <item-type>Switch</item-type>
+        <label>Circuit 6</label>
+        <description>The current state of circuit 6 (Pool or Hi-Temp)</description>
+    </channel-type>
+    <channel-type id="equipment-circuit7">
+        <item-type>Switch</item-type>
+        <label>Circuit 7</label>
+        <description>The current state of circuit 7</description>
+    </channel-type>
+    <channel-type id="equipment-circuit8">
+        <item-type>Switch</item-type>
+        <label>Circuit 8</label>
+        <description>The current state of circuit 8</description>
+    </channel-type>
+    <channel-type id="equipment-circuit9">
+        <item-type>Switch</item-type>
+        <label>Circuit 9</label>
+        <description>The current state of circuit 9</description>
+    </channel-type>
+    <channel-type id="equipment-circuit10">
+        <item-type>Switch</item-type>
+        <label>Circuit 10</label>
+        <description>The current state of circuit 10</description>
+    </channel-type>
+    
+    <channel-type id="temp-airtemp">
+        <item-type>Number</item-type>
+        <label>Air Temp</label>
+        <description>The current air temperature</description>
+        <category>Temperature</category>
+        <state readOnly="true"  pattern="%d">
+        </state>
+    </channel-type>
+
+    <channel-type id="pumps-pump1">
+        <item-type>String</item-type>
+        <label>Pump 1</label>
+        <description>Pump 1</description>
+        <state readOnly="true" pattern="%s">
+        </state>
+    </channel-type>
+    <channel-type id="pumps-pump2">
+        <item-type>String</item-type>
+        <label>Pump 2</label>
+        <description>Pump 2</description>
+        <state readOnly="true"  pattern="%s">
+        </state>
+    </channel-type>
+    <channel-type id="pumps-pump3">
+        <item-type>String</item-type>
+        <label>Pump 3</label>
+        <description>Pump 3</description>
+        <state readOnly="true"  pattern="%s">
+        </state>
+    </channel-type>
+    <channel-type id="pumps-pump4">
+        <item-type>String</item-type>
+        <label>Pump 4</label>
+        <description>Pump 4</description>
+        <state readOnly="true" pattern="%s">
+        </state>
+    </channel-type>
+    <channel-type id="pumps-pump5">
+        <item-type>String</item-type>
+        <label>Pump 5</label>
+        <description>Pump 5</description>
+        <state readOnly="true" pattern="%s">
+        </state>
+    </channel-type>
+    <channel-type id="pumps-pump6">
+        <item-type>String</item-type>
+        <label>Pump 6</label>
+        <description>Pump 6</description>
+        <state readOnly="true" pattern="%s">
+        </state>
+    </channel-type>
+    <channel-type id="pumps-pump7">
+        <item-type>String</item-type>
+        <label>Pump 7</label>
+        <description>Pump 7</description>
+        <state readOnly="true" pattern="%s">
+        </state>
+    </channel-type>
+    <channel-type id="pumps-pump8">
+        <item-type>String</item-type>
+        <label>Pump 8</label>
+        <description>Pump 8</description>
+        <state readOnly="true" pattern="%s">
+        </state>
+    </channel-type>
+
+    <channel-type id="watts-pump1">
+        <item-type>Number</item-type>
+        <label>Pump 1 watts</label>
+        <description>Current used by pump 1</description>
+        <state readOnly="true"  pattern="%d">
+        </state>
+    </channel-type>
+    <channel-type id="watts-pump2">
+        <item-type>Number</item-type>
+        <label>Pump 2 watts</label>
+        <description>Current used by pump 2</description>
+        <state readOnly="true"  pattern="%d">
+        </state>
+    </channel-type>
+    <channel-type id="watts-pump3">
+        <item-type>Number</item-type>
+        <label>Pump 3 watts</label>
+        <description>Current used by pump 3</description>
+        <state readOnly="true"  pattern="%d">
+        </state>
+    </channel-type>
+    <channel-type id="watts-pump4">
+        <item-type>Number</item-type>
+        <label>Pump 4 watts</label>
+        <description>Current used by pump 4</description>
+        <state readOnly="true"  pattern="%d">
+        </state>
+    </channel-type>
+    <channel-type id="watts-pump5">
+        <item-type>Number</item-type>
+        <label>Pump 5 watts</label>
+        <description>Current used by pump 5</description>
+        <state readOnly="true"  pattern="%d">
+        </state>
+    </channel-type>
+    <channel-type id="watts-pump6">
+        <item-type>Number</item-type>
+        <label>Pump 6 watts</label>
+        <description>Current used by pump 6</description>
+        <state readOnly="true"  pattern="%d">
+        </state>
+    </channel-type>
+    <channel-type id="watts-pump7">
+        <item-type>Number</item-type>
+        <label>Pump 7 watts</label>
+        <description>Current used by pump 7</description>
+        <state readOnly="true"  pattern="%d">
+        </state>
+    </channel-type>
+    <channel-type id="watts-pump8">
+        <item-type>Number</item-type>
+        <label>Pump 8 watts</label>
+        <description>Current used by pump 8</description>
+        <state readOnly="true"  pattern="%d">
+        </state>
+    </channel-type>
+
+    <channel-type id="rpms-pump1">
+        <item-type>Number</item-type>
+        <label>Pump 1 rpms</label>
+        <description>Pump 1 speed in rpms</description>
+        <state readOnly="true"  pattern="%d">
+        </state>
+    </channel-type>
+    <channel-type id="rpms-pump2">
+        <item-type>Number</item-type>
+        <label>Pump 2 rpms</label>
+        <description>Pump 2 speed in rpms</description>
+        <state readOnly="true"  pattern="%d">
+        </state>
+    </channel-type>
+    <channel-type id="rpms-pump3">
+        <item-type>Number</item-type>
+        <label>Pump 3 rpms</label>
+        <description>Pump 3 speed in rpms</description>
+        <state readOnly="true"  pattern="%d">
+        </state>
+    </channel-type>
+    <channel-type id="rpms-pump4">
+        <item-type>Number</item-type>
+        <label>Pump 4 rpms</label>
+        <description>Pump 4 speed in rpms</description>
+        <state readOnly="true"  pattern="%d">
+        </state>
+    </channel-type>
+    <channel-type id="rpms-pump5">
+        <item-type>Number</item-type>
+        <label>Pump 5 rpms</label>
+        <description>Pump 5 speed in rpms</description>
+        <state readOnly="true"  pattern="%d">
+        </state>
+    </channel-type>
+    <channel-type id="rpms-pump6">
+        <item-type>Number</item-type>
+        <label>Pump 6 rpms</label>
+        <description>Pump 6 speed in rpms</description>
+        <state readOnly="true"  pattern="%d">
+        </state>
+    </channel-type>
+    <channel-type id="rpms-pump7">
+        <item-type>Number</item-type>
+        <label>Pump 7 rpms</label>
+        <description>Pump 7 speed in rpms</description>
+        <state readOnly="true"  pattern="%d">
+        </state>
+    </channel-type>
+    <channel-type id="rpms-pump8">
+        <item-type>Number</item-type>
+        <label>Pump 8 rpms</label>
+        <description>Pump 8 speed in rpms</description>
+        <state readOnly="true"  pattern="%d">
+        </state>
+    </channel-type>
+
+</thing:thing-descriptions>
