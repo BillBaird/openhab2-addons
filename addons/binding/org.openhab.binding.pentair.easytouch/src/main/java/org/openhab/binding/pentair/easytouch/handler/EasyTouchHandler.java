@@ -79,7 +79,6 @@ public class EasyTouchHandler extends BaseThingHandler {
 
     @Override
     public void initialize() {
-        updateStatus(ThingStatus.INITIALIZING);
         logger.debug("Handler initialize on thread {}", java.lang.Thread.currentThread().getId());
         // TODO: Initialize the thing. If done set status to ONLINE to indicate proper working.
         // Long running initialization should be done asynchronously in background.
@@ -141,7 +140,7 @@ public class EasyTouchHandler extends BaseThingHandler {
         try {
             m_portName = configuration.usbPort;
         } catch (Exception e) {
-            updateStatus(ThingStatus.UNINITIALIZED, ThingStatusDetail.CONFIGURATION_ERROR, e.getMessage());
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR, e.getMessage());
             logger.error("Could not configure PentairEasytouch instance", e);
         }
 
@@ -153,12 +152,12 @@ public class EasyTouchHandler extends BaseThingHandler {
                 binderAddress = (byte) Integer.parseInt(configuration.binderAddress);
             }
         } catch (Exception e) {
-            updateStatus(ThingStatus.UNINITIALIZED, ThingStatusDetail.CONFIGURATION_ERROR, e.getMessage());
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR, e.getMessage());
             logger.error("Could not configure PentairEasytouch instance.  Unable to parse binderAddress.", e);
         }
         if (binderAddress < BindingConstants.MIN_REMOTE_ADDRESS
                 || binderAddress > BindingConstants.MAX_REMOTE_ADDRESS) {
-            updateStatus(ThingStatus.UNINITIALIZED, ThingStatusDetail.CONFIGURATION_ERROR,
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR,
                     "binderAddress must be between 0x20 and 0x22 inclusive.");
             logger.error("Could not configure PentairEasytouch instance.  Unable to set binderAddress.",
                     "binderAddress must be between 0x20 and 0x22 inclusive.");
@@ -176,12 +175,12 @@ public class EasyTouchHandler extends BaseThingHandler {
                 protocolAdapterAddress = (byte) Integer.parseInt(configuration.protocolAdapterAddress);
             }
         } catch (Exception e) {
-            updateStatus(ThingStatus.UNINITIALIZED, ThingStatusDetail.CONFIGURATION_ERROR, e.getMessage());
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR, e.getMessage());
             logger.error("Could not configure PentairEasytouch instance.  Unable to parse protocolAdapterAddress.", e);
         }
         if (protocolAdapterAddress != null && (protocolAdapterAddress < BindingConstants.MIN_REMOTE_ADDRESS
                 || protocolAdapterAddress > BindingConstants.MAX_REMOTE_ADDRESS)) {
-            updateStatus(ThingStatus.UNINITIALIZED, ThingStatusDetail.CONFIGURATION_ERROR,
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR,
                     "protocolAdapterAddress must be between 0x20 and 0x22 inclusive.");
             logger.error("Could not configure PentairEasytouch instance.  Unable to set protocolAdapterAddress.",
                     "protocolAdapterAddress must be between 0x20 and 0x22 inclusive.");
@@ -199,7 +198,7 @@ public class EasyTouchHandler extends BaseThingHandler {
                     pollMilliSeconds);
             properlyConfigured = true;
         } catch (Exception e) {
-            updateStatus(ThingStatus.UNINITIALIZED, ThingStatusDetail.CONFIGURATION_ERROR, e.getMessage());
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR, e.getMessage());
             logger.error("Could not configure PentairEasytouch instance", e);
         }
     }

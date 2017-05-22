@@ -19,6 +19,16 @@
             <channel id="equipment-circuit8" typeId="equipment-circuit8" />
             <channel id="equipment-circuit9" typeId="equipment-circuit9" />
             <channel id="equipment-circuit10" typeId="equipment-circuit10" />
+            <channel id="equipment-feature1" typeId="equipment-feature1" />
+            <channel id="equipment-feature2" typeId="equipment-feature2" />
+            <channel id="equipment-feature3" typeId="equipment-feature3" />
+            <channel id="equipment-feature4" typeId="equipment-feature4" />
+            <channel id="equipment-feature5" typeId="equipment-feature5" />
+            <channel id="equipment-feature6" typeId="equipment-feature6" />
+            <channel id="equipment-feature7" typeId="equipment-feature7" />
+            <channel id="equipment-feature8" typeId="equipment-feature8" />
+            <channel id="equipment-feature9" typeId="equipment-feature9" />
+            <channel id="equipment-feature10" typeId="equipment-feature10" />
             <channel id="temp-airtemp" typeId="temp-airtemp" />
             <channel id="pumps-pump1" typeId="pumps-pump1" />
             <channel id="pumps-pump2" typeId="pumps-pump2" />
@@ -119,6 +129,56 @@
         <item-type>Switch</item-type>
         <label>Circuit 10</label>
         <description>The current state of circuit 10</description>
+    </channel-type>
+    <channel-type id="equipment-feature1">
+        <item-type>Switch</item-type>
+        <label>Feature 1</label>
+        <description>The current state of feature/macro 1</description>
+    </channel-type>
+    <channel-type id="equipment-feature2">
+        <item-type>Switch</item-type>
+        <label>Feature 2</label>
+        <description>The current state of feature/macro 2</description>
+    </channel-type>
+    <channel-type id="equipment-feature3">
+        <item-type>Switch</item-type>
+        <label>Feature 3</label>
+        <description>The current state of feature/macro 3</description>
+    </channel-type>
+    <channel-type id="equipment-feature4">
+        <item-type>Switch</item-type>
+        <label>Feature 4</label>
+        <description>The current state of feature/macro 4</description>
+    </channel-type>
+    <channel-type id="equipment-feature5">
+        <item-type>Switch</item-type>
+        <label>Feature 5</label>
+        <description>The current state of feature/macro 5</description>
+    </channel-type>
+    <channel-type id="equipment-feature6">
+        <item-type>Switch</item-type>
+        <label>Feature 6</label>
+        <description>The current state of feature/macro 6</description>
+    </channel-type>
+    <channel-type id="equipment-feature7">
+        <item-type>Switch</item-type>
+        <label>Feature 7</label>
+        <description>The current state of feature/macro 7</description>
+    </channel-type>
+    <channel-type id="equipment-feature8">
+        <item-type>Switch</item-type>
+        <label>Feature 8</label>
+        <description>The current state of feature/macro 8</description>
+    </channel-type>
+    <channel-type id="equipment-feature9">
+        <item-type>Switch</item-type>
+        <label>Feature 9</label>
+        <description>The current state of feature/macro 9</description>
+    </channel-type>
+    <channel-type id="equipment-feature10">
+        <item-type>Switch</item-type>
+        <label>Feature 10</label>
+        <description>The current state of feature/macro 10</description>
     </channel-type>
     
     <channel-type id="temp-airtemp">

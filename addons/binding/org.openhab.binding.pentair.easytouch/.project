@@ -3,6 +3,7 @@
 	<name>org.openhab.binding.pentair.easytouch</name>
 	<comment></comment>
 	<projects>
+		<project>org.openhab.binding.serial</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

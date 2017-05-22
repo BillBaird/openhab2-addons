@@ -69,9 +69,13 @@ public class Panel {
     public Panel(EasyTouchHandler handler) {
         this.m_handler = handler;
         airTempChannel = handler.getThing().getChannel("temp-airtemp");
-        circuits = new Circuit[10];
+        circuits = new Circuit[20];
         for (int i = 1; i <= 10; i++) {
             Channel channel = handler.getThing().getChannel("equipment-circuit" + i);
+            circuits[i - 1] = new Circuit(channel, i);
+        }
+        for (int i = 11; i <= 20; i++) {
+            Channel channel = handler.getThing().getChannel("equipment-feature" + i);
             circuits[i - 1] = new Circuit(channel, i);
         }
         pumps = new Pump[8];
