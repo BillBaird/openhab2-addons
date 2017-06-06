@@ -185,7 +185,15 @@ public class Panel {
                 int circuitNum = Integer.parseInt(cUID.substring(17));
                 byte[] onOffCommand = sequencer.makeOnOffCommand(circuitNum, onOff);
                 if (logger.isTraceEnabled()) {
-                    logger.trace("OnOffCommand: {}", Utils.formatCommandBytes(onOffCommand));
+                    logger.trace("Circuit OnOffCommand: {}", Utils.formatCommandBytes(onOffCommand));
+                }
+                // Utils.printBytes("\nOnOffCommand", onOffCommand, "\n\n");
+                m_handler.write(onOffCommand);
+            } else if (cUID.startsWith("equipment-feature")) {
+                int circuitNum = Integer.parseInt(cUID.substring(17)) + 10;
+                byte[] onOffCommand = sequencer.makeOnOffCommand(circuitNum, onOff);
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Feature OnOffCommand: {}", Utils.formatCommandBytes(onOffCommand));
                 }
                 // Utils.printBytes("\nOnOffCommand", onOffCommand, "\n\n");
                 m_handler.write(onOffCommand);
