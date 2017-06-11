@@ -11,8 +11,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.TooManyListenersException;
 
+import org.eclipse.smarthome.core.items.Item;
 import org.eclipse.smarthome.core.thing.Channel;
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.Thing;
@@ -286,6 +289,32 @@ public class EasyTouchHandler extends BaseThingHandler {
 
     public Byte getProtocolAdapterAddress() {
         return protocolAdapterAddress;
+    }
+
+    public Set<Item> getItems(Channel channel) {
+        if (super.linkRegistry != null) {
+            return linkRegistry.getLinkedItems(channel.getUID());
+        } else {
+            return new LinkedHashSet<>();
+        }
+    }
+
+    public String getItemNames(Channel channel) {
+        Set<Item> items = this.getItems(channel);
+        StringBuilder sb = new StringBuilder();
+        for (Item item : items) {
+            String name = item.getName();
+            String label = item.getLabel();
+            sb.append(name);
+            if (!name.equals(label)) {
+                sb.append(": ").append(item.getLabel());
+            }
+            sb.append(", ");
+        }
+        if (sb.length() > 0) {
+            sb.setLength(sb.length() - 2);
+        }
+        return sb.toString();
     }
 
 }

@@ -38,6 +38,29 @@ public class Panel {
         }
     }
 
+    public class Feature {
+        public final Channel channel;
+        public final int featureNum;
+        public final int inx;
+        public final int mask;
+        public Boolean onOff;
+        public boolean pendingResponse;
+
+        public Feature(Channel channel, int featureNum) {
+            this.channel = channel;
+            this.featureNum = featureNum;
+            int i = 10 + featureNum - 1;
+            this.inx = 2 + (i / 8); // The byte index where the status is found
+            int mask = 1 << i; // The bit for the mask, always in the lower order byte
+            while (mask >= 0x100) {
+                mask = mask >> 8;
+            }
+            this.mask = mask;
+            this.onOff = null;
+            this.pendingResponse = false;
+        }
+    }
+
     public class Pump {
         public final Channel pumpChannel;
         public final Channel wattsChannel;
@@ -61,6 +84,7 @@ public class Panel {
     }
 
     private Circuit[] circuits;
+    private Feature[] features;
     private Pump[] pumps;
     private Channel airTempChannel;
     private int airTemp = -999;
@@ -69,14 +93,15 @@ public class Panel {
     public Panel(EasyTouchHandler handler) {
         this.m_handler = handler;
         airTempChannel = handler.getThing().getChannel("temp-airtemp");
-        circuits = new Circuit[20];
+        circuits = new Circuit[10];
         for (int i = 1; i <= 10; i++) {
             Channel channel = handler.getThing().getChannel("equipment-circuit" + i);
             circuits[i - 1] = new Circuit(channel, i);
         }
-        for (int i = 11; i <= 20; i++) {
+        features = new Feature[10];
+        for (int i = 1; i <= 10; i++) {
             Channel channel = handler.getThing().getChannel("equipment-feature" + i);
-            circuits[i - 1] = new Circuit(channel, i);
+            features[i - 1] = new Feature(channel, i);
         }
         pumps = new Pump[8];
         for (int i = 1; i <= 8; i++) {
@@ -160,15 +185,42 @@ public class Panel {
     public void consumePanelStatusMessage(int[] payload) {
         for (Circuit c : circuits) {
             boolean onOff = (payload[c.inx] & c.mask) != 0;
+            if (logger.isTraceEnabled()) {
+                logger.trace("PanelStatus {} {}-{} ({}) = {}", c.channel.getChannelTypeUID().getAsString(), c.inx,
+                        Utils.getByteStr(c.mask), this.m_handler.getItemNames(c.channel), onOff);
+            }
             if (c.onOff == null || c.onOff != onOff) {
-                logger.trace("{} = {}", c.channel.getChannelTypeUID().getAsString(), onOff);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("{} ({}) = {}", c.channel.getChannelTypeUID().getAsString(),
+                            m_handler.getItemNames(c.channel), onOff);
+                }
                 c.onOff = onOff;
                 State state = onOff ? OnOffType.ON : OnOffType.OFF;
                 m_handler.updateState(c.channel, state);
             }
         }
 
-        logger.trace("{} = {}", airTempChannel.getChannelTypeUID().getAsString(), payload[18]);
+        for (Feature f : features) {
+            boolean onOff = (payload[f.inx] & f.mask) != 0;
+            if (logger.isTraceEnabled()) {
+                logger.trace("PanelStatus {} {}-{} ({}) = {}", f.channel.getChannelTypeUID().getAsString(), f.inx,
+                        Utils.getByteStr(f.mask), m_handler.getItemNames(f.channel), onOff);
+            }
+            if (f.onOff == null || f.onOff != onOff) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("{} ({}) = {}", f.channel.getChannelTypeUID().getAsString(),
+                            m_handler.getItemNames(f.channel), onOff);
+                }
+                f.onOff = onOff;
+                State state = onOff ? OnOffType.ON : OnOffType.OFF;
+                m_handler.updateState(f.channel, state);
+            }
+        }
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("PanelStatus: {} ({}) = {}", airTempChannel.getChannelTypeUID().getAsString(),
+                    m_handler.getItemNames(airTempChannel), payload[18]);
+        }
         int value = payload[18];
         if (value != airTemp) {
             airTemp = payload[18];
@@ -190,8 +242,8 @@ public class Panel {
                 // Utils.printBytes("\nOnOffCommand", onOffCommand, "\n\n");
                 m_handler.write(onOffCommand);
             } else if (cUID.startsWith("equipment-feature")) {
-                int circuitNum = Integer.parseInt(cUID.substring(17)) + 10;
-                byte[] onOffCommand = sequencer.makeOnOffCommand(circuitNum, onOff);
+                int featureNum = Integer.parseInt(cUID.substring(17)) + 10;
+                byte[] onOffCommand = sequencer.makeOnOffCommand(featureNum, onOff);
                 if (logger.isTraceEnabled()) {
                     logger.trace("Feature OnOffCommand: {}", Utils.formatCommandBytes(onOffCommand));
                 }
