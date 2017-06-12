@@ -22,4 +22,8 @@ public class EasyTouchConfig {
      */
     public Integer pollMilliSeconds;
 
+    public String mySqlUrl;
+    public String mySqlUser;
+    public String mySqlPassword;
+
 }

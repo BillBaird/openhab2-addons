@@ -25,6 +25,7 @@ public class Message {
              * panel.consumePumpCommandMessage(this);
              */
         }
+        panel.logMsg(this);
     }
 
     public String getHeaderByteStr() {
@@ -32,8 +33,32 @@ public class Message {
                 + " " + Utils.getByteStr(this.cfi);
     }
 
+    public String getSourceStr() {
+        return Utils.getAddrName(source);
+    }
+
+    public String getDestStr() {
+        return Utils.getAddrName(dest);
+    }
+
     public String getAddressStr() {
-        return Utils.getAddrName(this.source) + " -> " + Utils.getAddrName(this.dest);
+        return getSourceStr() + " -> " + getDestStr();
+    }
+
+    public String getCommandStr() {
+        return Utils.getCommand(cfi);
+    }
+
+    public int getPayloadLength() {
+        return length;
+    }
+
+    public String getPayloadByteStr() {
+        return Utils.formatCommandBytes(payload);
+    }
+
+    public String getInterpretationStr() {
+        return getCfiStr();
     }
 
     public String getPumpCommandStr() {

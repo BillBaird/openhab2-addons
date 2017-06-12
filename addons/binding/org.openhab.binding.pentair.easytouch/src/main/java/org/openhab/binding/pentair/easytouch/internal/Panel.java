@@ -249,8 +249,14 @@ public class Panel {
                 }
                 // Utils.printBytes("\nOnOffCommand", onOffCommand, "\n\n");
                 m_handler.write(onOffCommand);
+            } else if (cUID.contentEquals("log-messages")) {
+                m_handler.getMsgLog().setEnabled(onOff == OnOffType.ON);
             }
         }
+    }
+
+    public void logMsg(Message msg) {
+        m_handler.getMsgLog().logMsg(msg);
     }
 
 }

@@ -54,6 +54,8 @@
             <channel id="rpms-pump6" typeId="rpms-pump6" />
             <channel id="rpms-pump7" typeId="rpms-pump7" />
             <channel id="rpms-pump8" typeId="rpms-pump8" />
+            
+            <channel id="log-messages" typeId="msg-log-switch" />
         </channels>
 
         <config-description>
@@ -75,6 +77,19 @@
                 <label>RS-485 serial line polling interval</label>
                 <description>The interval the RS-485 line should be polled in milliseconds</description>
                 <default>1000</default>
+            </parameter>
+            
+            <parameter name="mySqlUrl" type="text" required="false">
+                <label>Logging MySql URL</label>
+                <description>The MySql URL for message logging (e.g. jdbc:mysql://127.0.0.1:3306/OpenHAB).</description>
+            </parameter>
+            <parameter name="mySqlUser" type="text" required="false">
+                <label>Logging MySql User</label>
+                <description>The MySql User for message logging (e.g. openhab).</description>
+            </parameter>
+            <parameter name="mySqlPassword" type="text" required="false">
+                <label>Logging MySql Password</label>
+                <description>The MySql Password for message logging.</description>
             </parameter>
         </config-description>
     </thing-type>
@@ -359,6 +374,12 @@
         <description>Pump 8 speed in rpms</description>
         <state readOnly="true"  pattern="%d">
         </state>
+    </channel-type>
+
+    <channel-type id="msg-log-switch">
+        <item-type>Switch</item-type>
+        <label>Message Log</label>
+        <description>When true, log messages to MySql</description>
     </channel-type>
 
 </thing:thing-descriptions>

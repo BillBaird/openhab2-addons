@@ -27,6 +27,7 @@ import org.eclipse.smarthome.core.types.State;
 import org.openhab.binding.pentair.easytouch.BindingConstants;
 import org.openhab.binding.pentair.easytouch.config.EasyTouchConfig;
 import org.openhab.binding.pentair.easytouch.internal.MessageReader;
+import org.openhab.binding.pentair.easytouch.internal.MySqlLogger;
 import org.openhab.binding.pentair.easytouch.internal.Panel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,6 +70,7 @@ public class EasyTouchHandler extends BaseThingHandler {
     private MessageReader m_messageReader;
     private InputStream m_inStream;
     private OutputStream m_outStream;
+    private MySqlLogger msgLog;
 
     public EasyTouchHandler(Thing thing) {
         super(thing);
@@ -93,7 +95,8 @@ public class EasyTouchHandler extends BaseThingHandler {
         // as expected. E.g.
         // updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR,
         // "Can not access device as username and/or password are invalid");
-        configure();
+        EasyTouchConfig config = configure();
+        msgLog = new MySqlLogger(config);
         panel = new Panel(this);
         if (properlyConfigured) {
             openPort();
@@ -104,6 +107,7 @@ public class EasyTouchHandler extends BaseThingHandler {
     public void dispose() {
         logger.debug("Handler dispose on thread {}", java.lang.Thread.currentThread().getId());
         try {
+            msgLog.dispose();
             if (m_inStream != null) {
                 m_inStream.close();
             }
@@ -115,6 +119,7 @@ public class EasyTouchHandler extends BaseThingHandler {
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
                     "Cannot properly close the input and output streams.");
         } finally {
+            msgLog = null;
             if (m_port != null) {
                 m_port.close();
             }
@@ -136,7 +141,7 @@ public class EasyTouchHandler extends BaseThingHandler {
     /**
      * Configures this thing
      */
-    private void configure() {
+    private EasyTouchConfig configure() {
         properlyConfigured = false;
 
         EasyTouchConfig configuration = getConfig().as(EasyTouchConfig.class);
@@ -204,6 +209,8 @@ public class EasyTouchHandler extends BaseThingHandler {
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR, e.getMessage());
             logger.error("Could not configure PentairEasytouch instance", e);
         }
+
+        return configuration;
     }
 
     /**
@@ -315,6 +322,10 @@ public class EasyTouchHandler extends BaseThingHandler {
             sb.setLength(sb.length() - 2);
         }
         return sb.toString();
+    }
+
+    public MySqlLogger getMsgLog() {
+        return this.msgLog;
     }
 
 }

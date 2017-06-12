@@ -138,6 +138,7 @@ public class MessageReader implements SerialPortEventListener {
                         // logger.debug("Length = " + b);
                         state = State.Payload;
                     } else {
+                        payload = new int[0];
                         state = State.C1;
                     }
                     break;
