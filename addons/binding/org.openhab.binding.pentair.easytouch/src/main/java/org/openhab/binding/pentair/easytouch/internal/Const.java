@@ -1,5 +1,7 @@
 package org.openhab.binding.pentair.easytouch.internal;
 
+import java.util.Calendar;
+
 class Const {
 
     // List of all RS485 addresses
@@ -39,4 +41,9 @@ class Const {
     final static byte CFI_PUMP_SETCONTROL = (byte) 0x04;
     final static byte CFI_PUMP_SETRUN = (byte) 0x06;
     final static byte CFI_PUMP_STAT = (byte) 0x07;
+
+    // Calendar constants
+    final static long TIMEZONE_RAW_OFFSET_MILLIS = Calendar.getInstance().getTimeZone().getRawOffset();
+    final static long MILLIS_PER_DAY = 24 * 60 * 60 * 1000;
+    final static long TEN_MINUTES = 10 * 60 * 1000;
 }

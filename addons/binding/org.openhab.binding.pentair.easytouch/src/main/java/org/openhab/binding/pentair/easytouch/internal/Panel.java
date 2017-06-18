@@ -1,5 +1,7 @@
 package org.openhab.binding.pentair.easytouch.internal;
 
+import java.util.Calendar;
+
 import org.eclipse.smarthome.core.library.types.DecimalType;
 import org.eclipse.smarthome.core.library.types.OnOffType;
 import org.eclipse.smarthome.core.thing.Channel;
@@ -83,16 +85,69 @@ public class Panel {
         }
     }
 
+    public class ClockDrift {
+        public Channel clockDriftChannel;
+        public Calendar driftLastSet;
+        public long lastDriftSecs;
+
+        public ClockDrift(EasyTouchHandler handler) {
+            clockDriftChannel = handler.getThing().getChannel("clock-drift");
+        }
+
+        private long calcClockDiff(int hours, int minutes, Calendar now) {
+            long msgTimeSecs = hours * 3600 + minutes * 60;
+            long currentTimeSecs = (now.getTimeInMillis() + Const.TIMEZONE_RAW_OFFSET_MILLIS) % Const.MILLIS_PER_DAY
+                    / 1000;
+            return msgTimeSecs - currentTimeSecs;
+        }
+
+        public void captureDrift(int hours, int minutes) {
+            Calendar now = Calendar.getInstance();
+            long drift = calcClockDiff(hours, minutes, now);
+            if (driftLastSet == null) {
+                // We are starting again. Initialize lastDriftSecs to whatever this one is.
+                lastDriftSecs = drift;
+                driftLastSet = now;
+            }
+            // Update drift if it is closer to zero
+            if (drift >= 0) {
+                if (drift < lastDriftSecs) {
+                    lastDriftSecs = drift;
+                    driftLastSet = now;
+                }
+            } else {
+                if (drift > lastDriftSecs) {
+                    lastDriftSecs = drift;
+                    driftLastSet = now;
+                }
+            }
+            // If it has been 10 minutes since we last captured a minimum value, publish it and start over
+            if ((now.getTimeInMillis() - driftLastSet.getTimeInMillis()) > Const.TEN_MINUTES) {
+                State state = new DecimalType(lastDriftSecs);
+                m_handler.updateState(clockDriftChannel, state);
+                driftLastSet = null;
+            }
+        }
+    }
+
     private Circuit[] circuits;
     private Feature[] features;
     private Pump[] pumps;
     private Channel airTempChannel;
+    private Channel poolTempChannel;
+    private Channel spaTempChannel;
+    private ClockDrift clockDrift;
     private int airTemp = -999;
+    private int poolTemp = -999;
+    private int spaTemp = -999;
     private Sequencer sequencer;
 
     public Panel(EasyTouchHandler handler) {
         this.m_handler = handler;
         airTempChannel = handler.getThing().getChannel("temp-airtemp");
+        poolTempChannel = handler.getThing().getChannel("temp-pooltemp");
+        spaTempChannel = handler.getThing().getChannel("temp-spatemp");
+        clockDrift = new ClockDrift(handler);
         circuits = new Circuit[10];
         for (int i = 1; i <= 10; i++) {
             Channel channel = handler.getThing().getChannel("equipment-circuit" + i);
@@ -221,12 +276,31 @@ public class Panel {
             logger.debug("PanelStatus: {} ({}) = {}", airTempChannel.getChannelTypeUID().getAsString(),
                     m_handler.getItemNames(airTempChannel), payload[18]);
         }
-        int value = payload[18];
+        int value = payload[14];
+        if (value != poolTemp) {
+            Circuit poolCircuit = circuits[5]; // Get Pool Circuit ... TODO: needs to be dynamic
+            if (poolCircuit.onOff) { // Get Pool Circuit state ... TODO: needs to be dynamic
+                poolTemp = payload[14];
+                State state = new DecimalType(poolTemp);
+                m_handler.updateState(poolTempChannel, state);
+            }
+        }
+        value = payload[15];
+        if (value != spaTemp) {
+            Circuit spaCircuit = circuits[0]; // Get Spa Circuit ... TODO: needs to be dynamic
+            if (spaCircuit.onOff) { // Get Spa Circuit state ... TODO: needs to be dynamic
+                spaTemp = payload[15];
+                State state = new DecimalType(spaTemp);
+                m_handler.updateState(spaTempChannel, state);
+            }
+        }
+        value = payload[18];
         if (value != airTemp) {
             airTemp = payload[18];
             State state = new DecimalType(airTemp);
             m_handler.updateState(airTempChannel, state);
         }
+        clockDrift.captureDrift(payload[0], payload[1]);
     }
 
     public void handleCommand(ChannelUID channelUID, Command command) {
