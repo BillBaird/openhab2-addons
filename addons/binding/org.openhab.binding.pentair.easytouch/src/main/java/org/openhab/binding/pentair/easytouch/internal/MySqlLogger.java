@@ -26,7 +26,7 @@ public class MySqlLogger {
 
     // Error counter - used to reconnect to database on error
     private int errCnt;
-    private int errReconnectThreshold = 0;
+    private int errReconnectThreshold = 1;
 
     private int waitTimeout = -1;
 
@@ -127,6 +127,13 @@ public class MySqlLogger {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
         logEnabled(enabled);
+        if (enabled) {
+            if (!isConnected()) {
+                connectToDatabase();
+            }
+        } else {
+            disconnectFromDatabase();
+        }
     }
 
     public void logEnabled(boolean enabled) {
