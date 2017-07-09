@@ -140,7 +140,7 @@ public class Panel {
     private int airTemp = -999;
     private int poolTemp = -999;
     private int spaTemp = -999;
-    private Sequencer sequencer;
+    private MessageFactory msgFactory;
 
     public Panel(EasyTouchHandler handler) {
         this.m_handler = handler;
@@ -165,7 +165,7 @@ public class Panel {
             Channel rpmsChannel = handler.getThing().getChannel("rpms-pump" + i);
             pumps[i - 1] = new Pump(pumpChannel, wattsChannel, rpmsChannel, i);
         }
-        sequencer = new Sequencer(handler);
+        msgFactory = new MessageFactory(handler);
     }
 
     public void consumePumpStatusMessage(Message msg) {
@@ -309,21 +309,20 @@ public class Panel {
             String cUID = channelUID.getId();
             if (cUID.startsWith("equipment-circuit")) {
                 int circuitNum = Integer.parseInt(cUID.substring(17));
-                byte[] onOffCommand = sequencer.makeOnOffCommand(circuitNum, onOff);
+                Message onOffCommandMsg = msgFactory.makeOnOffCommand(circuitNum, onOff);
                 if (logger.isTraceEnabled()) {
-                    logger.trace("Circuit OnOffCommand: {}", Utils.formatCommandBytes(onOffCommand));
+                    logger.trace("Circuit OnOffCommand: {}", Utils.formatCommandBytes(onOffCommandMsg));
                 }
-                Message onOffAck = sequencer.makeOnOffAck();
-                // Utils.printBytes("\nOnOffCommand", onOffCommand, "\n\n");
-                m_handler.write(onOffCommand, onOffAck);
+                Message onOffAck = msgFactory.makeOnOffAck();
+                m_handler.write(onOffCommandMsg, onOffAck);
             } else if (cUID.startsWith("equipment-feature")) {
                 int featureNum = Integer.parseInt(cUID.substring(17)) + 10;
-                byte[] onOffCommand = sequencer.makeOnOffCommand(featureNum, onOff);
+                Message onOffCommandMsg = msgFactory.makeOnOffCommand(featureNum, onOff);
                 if (logger.isTraceEnabled()) {
-                    logger.trace("Feature OnOffCommand: {}", Utils.formatCommandBytes(onOffCommand));
+                    logger.trace("Feature OnOffCommand: {}", Utils.formatCommandBytes(onOffCommandMsg));
                 }
-                // Utils.printBytes("\nOnOffCommand", onOffCommand, "\n\n");
-                m_handler.write(onOffCommand, null);
+                Message onOffAck = msgFactory.makeOnOffAck();
+                m_handler.write(onOffCommandMsg, onOffAck);
             } else if (cUID.contentEquals("log-messages")) {
                 m_handler.getMsgLog().setEnabled(onOff == OnOffType.ON);
             }

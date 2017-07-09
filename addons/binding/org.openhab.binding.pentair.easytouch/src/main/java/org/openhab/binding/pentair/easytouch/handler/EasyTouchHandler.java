@@ -279,22 +279,22 @@ public class EasyTouchHandler extends BaseThingHandler {
      *
      * @param b byte array to write
      */
-    public void write(byte[] b, Message ack) {
+    public void write(Message cmd, Message ack) {
         try {
-            PendingResponse newMsg = new PendingResponse(b, ack);
+            PendingResponse newMsg = new PendingResponse(cmd, ack);
             if (ack != null) {
                 synchronized (m_pendingResponseList) {
                     for (PendingResponse pendingMsg : m_pendingResponseList) {
                         if (newMsg.IsDupOf(pendingMsg)) {
-                            logger.info("duplicate message not sent {}",
-                                    Utils.formatCommandBytes(newMsg.getSentBytes()));
+                            logger.info("duplicate message not sent {}", Utils.formatCommandBytes(cmd));
                             return;
                         }
                     }
                 }
             }
-            m_outStream.write(b);
-            logger.debug("Sent: {}, requires ack={}", Utils.formatCommandBytes(b), ack != null);
+            msgLog.logMsg(cmd); // Log to Sql
+            m_outStream.write(cmd.asBytes());
+            logger.debug("Sent: {}, requires ack={}", Utils.formatCommandBytes(cmd), ack != null);
             if (ack != null) {
                 synchronized (m_pendingResponseList) {
                     m_pendingResponseList.add(newMsg);
@@ -315,7 +315,7 @@ public class EasyTouchHandler extends BaseThingHandler {
                         m_pendingResponseList.remove(i);
                         logger.info("Acknowledged[{}] in {} millis: {}", i,
                                 System.currentTimeMillis() - pending.getSentMillis(),
-                                Utils.formatCommandBytes(pending.getSentBytes()));
+                                pending.getSentCommand().toString());
                     }
                 }
             }
@@ -327,10 +327,9 @@ public class EasyTouchHandler extends BaseThingHandler {
                         PendingResponse pending = m_pendingResponseList.get(i);
                         // Resend if it hasn't been acknowledged in 1 second
                         if (System.currentTimeMillis() - pending.getSentMillis() > 1000) {
-                            write(pending.getSentBytes(), null); // resend, without requesting a new acknowledgement
+                            write(pending.getSentCommand(), null); // resend, without requesting a new acknowledgement
                             pending.resetTimer();
-                            logger.info("Resent unacknowledge message: {}",
-                                    Utils.formatCommandBytes(pending.getSentBytes()));
+                            logger.info("Resent unacknowledged message: {}", pending.getSentCommand().toString());
                         }
                     }
                 }

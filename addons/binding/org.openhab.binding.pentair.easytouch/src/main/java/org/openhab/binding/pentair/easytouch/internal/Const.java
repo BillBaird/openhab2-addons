@@ -23,19 +23,9 @@ class Const {
     final static int CHK_SUM_1_PLACEHOLDER = PLACEHOLDER;
     final static int CHK_SUM_2_PLACEHOLDER = PLACEHOLDER;
 
-    // Sequence indexes
-    final static int INX_DEST_ADDRESS = 5;
-    final static int INX_SOURCE_ADDRESS = 6;
-    final static int INX_LENGTH = 8;
-    final static int INX_CIRCUIT_NUM = 9;
-    final static int INX_CIRCUIT_ON_OFF = 10;
-
     // Command Sequence Templates
     final static byte CMD_SET_ACK = 0x01;
     final static byte CMD_SET_CIRCUIT = (byte) 0x86;
-    final static byte[] SEQ_SET_CIRCUIT = new byte[] { PREAMBLE_1, PREAMBLE_2, PREAMBLE_3, PREAMBLE_4, 0x01,
-            PANEL_ADDRESS, SOURCE_ADDRESS_PLACEHOLDER, CMD_SET_CIRCUIT, 0x02, CIRCUIT_NUM_PLACEHOLDER,
-            CIRCUIT_ON_OFF_PLACEHOLDER, CHK_SUM_1_PLACEHOLDER, CHK_SUM_2_PLACEHOLDER };
 
     // Command (CFI) values
     final static byte CFI_PUMP_COMMAND = (byte) 0x01;

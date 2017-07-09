@@ -16,6 +16,7 @@ public class Message {
     public byte length;
     public int[] payload;
     public int checksum;
+    public byte[] command;
 
     public Message() {
     }
@@ -44,6 +45,26 @@ public class Message {
             }
         }
         return result;
+    }
+
+    public byte[] asBytes() {
+        if (command == null) {
+            command = new byte[11 + length];
+            command[0] = Const.PREAMBLE_1;
+            command[1] = Const.PREAMBLE_2;
+            command[2] = Const.PREAMBLE_3;
+            command[3] = Const.PREAMBLE_4;
+            command[4] = other;
+            command[5] = dest;
+            command[6] = source;
+            command[7] = cfi;
+            command[8] = length;
+            for (int i = 0; i < payload.length; i++) {
+                command[9 + i] = (byte) (payload[i] & 0xFF);
+            }
+            Utils.setCheckSum(command);
+        }
+        return command;
     }
 
     public String getHeaderByteStr() {

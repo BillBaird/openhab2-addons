@@ -36,6 +36,10 @@ public class Utils {
      * System.out.print(suffix);
      * }
      */
+    public static String formatCommandBytes(Message msg) {
+        return formatCommandBytes(msg.asBytes());
+    }
+
     public static String formatCommandBytes(int[] bytes) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < bytes.length; i++) {

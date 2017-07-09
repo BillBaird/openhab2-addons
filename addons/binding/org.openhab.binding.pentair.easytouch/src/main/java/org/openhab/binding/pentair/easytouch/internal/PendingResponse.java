@@ -2,12 +2,12 @@ package org.openhab.binding.pentair.easytouch.internal;
 
 public class PendingResponse {
 
-    private byte[] m_sentBytes;
+    private Message m_sentCommand;
     private long m_sentMillis;
     private Message m_expectedResponse;
 
-    public PendingResponse(byte[] sentBytes, Message expectedResponse) {
-        m_sentBytes = sentBytes;
+    public PendingResponse(Message command, Message expectedResponse) {
+        m_sentCommand = command;
         m_sentMillis = System.currentTimeMillis();
         m_expectedResponse = expectedResponse;
     }
@@ -17,23 +17,15 @@ public class PendingResponse {
     }
 
     public boolean IsDupOf(PendingResponse other) {
-        byte[] otherSentBytes = other.getSentBytes();
-        if (m_sentBytes.length != otherSentBytes.length) {
-            return false;
-        }
-        boolean result = true;
-        for (int i = m_sentBytes.length - 1; i >= 0; i--) {
-            result = result && m_sentBytes[i] == otherSentBytes[i];
-        }
-        return result && m_expectedResponse.matches(other.getExpectedResponse());
+        return m_sentCommand.matches(other.getSentCommand()) && m_expectedResponse.matches(other.getExpectedResponse());
     }
 
     public long getSentMillis() {
         return m_sentMillis;
     }
 
-    public byte[] getSentBytes() {
-        return m_sentBytes;
+    public Message getSentCommand() {
+        return m_sentCommand;
     }
 
     public Message getExpectedResponse() {

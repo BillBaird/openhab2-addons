@@ -3,21 +3,23 @@ package org.openhab.binding.pentair.easytouch.internal;
 import org.eclipse.smarthome.core.library.types.OnOffType;
 import org.openhab.binding.pentair.easytouch.handler.EasyTouchHandler;
 
-class Sequencer {
+class MessageFactory {
 
     EasyTouchHandler m_handler;
 
-    Sequencer(EasyTouchHandler handler) {
+    MessageFactory(EasyTouchHandler handler) {
         m_handler = handler;
     }
 
-    byte[] makeOnOffCommand(int circuitNum, OnOffType onOff) {
-        byte[] cmd = Const.SEQ_SET_CIRCUIT.clone();
-        cmd[Const.INX_SOURCE_ADDRESS] = m_handler.getBinderAddress();
-        cmd[Const.INX_CIRCUIT_NUM] = (byte) circuitNum;
-        cmd[Const.INX_CIRCUIT_ON_OFF] = (byte) (onOff == OnOffType.ON ? 0x01 : 0x00);
-        Utils.setCheckSum(cmd);
-        return cmd;
+    Message makeOnOffCommand(int circuitNum, OnOffType onOff) {
+        Message msg = new Message();
+        msg.other = 0x01;
+        msg.source = m_handler.getBinderAddress();
+        msg.dest = Const.PANEL_ADDRESS;
+        msg.cfi = Const.CMD_SET_CIRCUIT;
+        msg.length = 2;
+        msg.payload = new int[] { circuitNum, (onOff == OnOffType.ON ? 0x01 : 0x00) };
+        return msg;
     }
 
     Message makeOnOffAck() {
