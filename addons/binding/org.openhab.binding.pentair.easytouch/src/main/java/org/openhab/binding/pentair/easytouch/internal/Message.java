@@ -2,7 +2,12 @@ package org.openhab.binding.pentair.easytouch.internal;
 
 import java.util.Calendar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Message {
+
+    private static final Logger logger = LoggerFactory.getLogger(Message.class);
 
     public byte source;
     public byte cfi;
@@ -16,6 +21,7 @@ public class Message {
     }
 
     public void dispatchMessage(Panel panel) {
+        panel.handleAcknowledgement(this);
         if (dest == 0x0F && length == 29) {
             panel.consumePanelStatusMessage(payload);
         } else if (cfi == Const.CFI_PUMP_STAT && dest == 0x10 && length == 15) {
@@ -28,6 +34,16 @@ public class Message {
              */
         }
         panel.logMsg(this);
+    }
+
+    public boolean matches(Message m) {
+        boolean result = length == m.length && cfi == m.cfi && source == m.source && dest == m.dest && other == m.other;
+        if (result) {
+            for (int i = length - 1; i >= 0; i--) {
+                result = result && (payload[i] == m.payload[i]);
+            }
+        }
+        return result;
     }
 
     public String getHeaderByteStr() {

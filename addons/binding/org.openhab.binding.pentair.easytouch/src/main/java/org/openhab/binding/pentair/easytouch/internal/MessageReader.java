@@ -3,7 +3,6 @@ package org.openhab.binding.pentair.easytouch.internal;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.openhab.binding.pentair.easytouch.handler.EasyTouchHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,7 +11,7 @@ import gnu.io.SerialPortEventListener;
 
 public class MessageReader implements SerialPortEventListener {
 
-    private Logger logger = LoggerFactory.getLogger(EasyTouchHandler.class);
+    private Logger logger = LoggerFactory.getLogger(MessageReader.class);
 
     Panel m_panel;
     InputStream m_inStream;
@@ -35,8 +34,6 @@ public class MessageReader implements SerialPortEventListener {
     }
 
     private State state = State.Start;
-    private byte[] dest = new byte[2];
-    private byte[] source = new byte[2];
     private int length;
     private int position;
     private int[] payload;
@@ -106,25 +103,21 @@ public class MessageReader implements SerialPortEventListener {
                 case Preamble:
                     msg = new Message();
                     msg.other = (byte) b;
-                    dest[0] = (byte) b;
                     checksumCalc += b;
                     state = State.H1;
                     break;
                 case H1:
                     msg.dest = (byte) b;
-                    dest[1] = (byte) b;
                     checksumCalc += b;
                     state = State.H2;
                     break;
                 case H2:
                     msg.source = (byte) b;
-                    source[0] = (byte) b;
                     checksumCalc += b;
                     state = State.H3;
                     break;
                 case H3:
                     msg.cfi = (byte) b;
-                    source[1] = (byte) b;
                     checksumCalc += b;
                     state = State.Header;
                     break;

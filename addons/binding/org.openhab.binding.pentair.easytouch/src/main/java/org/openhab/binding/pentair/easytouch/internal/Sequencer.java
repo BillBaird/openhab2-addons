@@ -20,4 +20,14 @@ class Sequencer {
         return cmd;
     }
 
+    Message makeOnOffAck() {
+        Message msg = new Message();
+        msg.other = 0x01;
+        msg.source = Const.PANEL_ADDRESS;
+        msg.dest = m_handler.getBinderAddress();
+        msg.cfi = Const.CMD_SET_ACK;
+        msg.length = 1;
+        msg.payload = new int[] { Const.CMD_SET_CIRCUIT & 0xFF };
+        return msg;
+    }
 }

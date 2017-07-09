@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 public class Panel {
 
-    private Logger logger = LoggerFactory.getLogger(EasyTouchHandler.class);
+    private Logger logger = LoggerFactory.getLogger(Panel.class);
     EasyTouchHandler m_handler;
 
     public class Circuit {
@@ -313,8 +313,9 @@ public class Panel {
                 if (logger.isTraceEnabled()) {
                     logger.trace("Circuit OnOffCommand: {}", Utils.formatCommandBytes(onOffCommand));
                 }
+                Message onOffAck = sequencer.makeOnOffAck();
                 // Utils.printBytes("\nOnOffCommand", onOffCommand, "\n\n");
-                m_handler.write(onOffCommand);
+                m_handler.write(onOffCommand, onOffAck);
             } else if (cUID.startsWith("equipment-feature")) {
                 int featureNum = Integer.parseInt(cUID.substring(17)) + 10;
                 byte[] onOffCommand = sequencer.makeOnOffCommand(featureNum, onOff);
@@ -322,11 +323,15 @@ public class Panel {
                     logger.trace("Feature OnOffCommand: {}", Utils.formatCommandBytes(onOffCommand));
                 }
                 // Utils.printBytes("\nOnOffCommand", onOffCommand, "\n\n");
-                m_handler.write(onOffCommand);
+                m_handler.write(onOffCommand, null);
             } else if (cUID.contentEquals("log-messages")) {
                 m_handler.getMsgLog().setEnabled(onOff == OnOffType.ON);
             }
         }
+    }
+
+    public void handleAcknowledgement(Message msg) {
+        m_handler.handleAcknowledgement(msg);
     }
 
     public void logMsg(Message msg) {

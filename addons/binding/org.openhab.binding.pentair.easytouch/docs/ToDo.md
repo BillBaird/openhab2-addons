@@ -4,3 +4,4 @@
 * Get Water Temp and last Timestamp from Panel.consumePanelStatusMessage
 * Calculate TimeStamp drift - make read-only item property ... once working, make auto-update, but only when nothing is running and not near midnight.
 * Think about what happens if Pentair is behind the pi.  Does the drift go from positive to negative every 60 seconds?
+* Make clocksync interval configurable in minutes?  10 minute default?  (This would be at the thing level)

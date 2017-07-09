@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.TooManyListenersException;
@@ -26,9 +27,12 @@ import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.State;
 import org.openhab.binding.pentair.easytouch.BindingConstants;
 import org.openhab.binding.pentair.easytouch.config.EasyTouchConfig;
+import org.openhab.binding.pentair.easytouch.internal.Message;
 import org.openhab.binding.pentair.easytouch.internal.MessageReader;
 import org.openhab.binding.pentair.easytouch.internal.MySqlLogger;
 import org.openhab.binding.pentair.easytouch.internal.Panel;
+import org.openhab.binding.pentair.easytouch.internal.PendingResponse;
+import org.openhab.binding.pentair.easytouch.internal.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,6 +74,7 @@ public class EasyTouchHandler extends BaseThingHandler {
     private MessageReader m_messageReader;
     private InputStream m_inStream;
     private OutputStream m_outStream;
+    private ArrayList<PendingResponse> m_pendingResponseList = new ArrayList<PendingResponse>();
     private MySqlLogger msgLog;
 
     public EasyTouchHandler(Thing thing) {
@@ -274,19 +279,62 @@ public class EasyTouchHandler extends BaseThingHandler {
      *
      * @param b byte array to write
      */
-    public void write(byte[] b) {
+    public void write(byte[] b, Message ack) {
         try {
+            PendingResponse newMsg = new PendingResponse(b, ack);
+            if (ack != null) {
+                synchronized (m_pendingResponseList) {
+                    for (PendingResponse pendingMsg : m_pendingResponseList) {
+                        if (newMsg.IsDupOf(pendingMsg)) {
+                            logger.info("duplicate message not sent {}",
+                                    Utils.formatCommandBytes(newMsg.getSentBytes()));
+                            return;
+                        }
+                    }
+                }
+            }
             m_outStream.write(b);
+            logger.debug("Sent: {}, requires ack={}", Utils.formatCommandBytes(b), ack != null);
+            if (ack != null) {
+                synchronized (m_pendingResponseList) {
+                    m_pendingResponseList.add(newMsg);
+                    logger.info("pending response[{}] added {}", m_pendingResponseList.size() - 1, ack.toString());
+                }
+            }
         } catch (IOException e) {
-            logger.trace("got exception while writing: {}", e.getMessage());
-            // while (!reconnect()) {
-            // try {
-            // logger.trace("sleeping before reconnecting");
-            // Thread.sleep(10000);
-            // } catch (InterruptedException ie) {
-            // logger.warn("interrupted while sleeping on write reconnect");
-            // }
-            // }
+            logger.info("got exception while writing: {}", e.getMessage());
+        }
+    }
+
+    public void handleAcknowledgement(Message msg) {
+        if (m_pendingResponseList.size() > 0) {
+            synchronized (m_pendingResponseList) {
+                for (int i = m_pendingResponseList.size() - 1; i >= 0; i--) {
+                    PendingResponse pending = m_pendingResponseList.get(i);
+                    if (pending.Acknowledged(msg)) {
+                        m_pendingResponseList.remove(i);
+                        logger.info("Acknowledged[{}] in {} millis: {}", i,
+                                System.currentTimeMillis() - pending.getSentMillis(),
+                                Utils.formatCommandBytes(pending.getSentBytes()));
+                    }
+                }
+            }
+            // Now that we have handled any incoming acknowledgement, examine what remains to
+            // see if it needs to be sent again.
+            if (m_pendingResponseList.size() > 0) {
+                synchronized (m_pendingResponseList) {
+                    for (int i = 0; i < m_pendingResponseList.size(); i++) {
+                        PendingResponse pending = m_pendingResponseList.get(i);
+                        // Resend if it hasn't been acknowledged in 1 second
+                        if (System.currentTimeMillis() - pending.getSentMillis() > 1000) {
+                            write(pending.getSentBytes(), null); // resend, without requesting a new acknowledgement
+                            pending.resetTimer();
+                            logger.info("Resent unacknowledge message: {}",
+                                    Utils.formatCommandBytes(pending.getSentBytes()));
+                        }
+                    }
+                }
+            }
         }
     }
 

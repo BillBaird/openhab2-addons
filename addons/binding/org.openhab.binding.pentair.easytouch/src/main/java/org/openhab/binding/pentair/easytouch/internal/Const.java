@@ -31,6 +31,7 @@ class Const {
     final static int INX_CIRCUIT_ON_OFF = 10;
 
     // Command Sequence Templates
+    final static byte CMD_SET_ACK = 0x01;
     final static byte CMD_SET_CIRCUIT = (byte) 0x86;
     final static byte[] SEQ_SET_CIRCUIT = new byte[] { PREAMBLE_1, PREAMBLE_2, PREAMBLE_3, PREAMBLE_4, 0x01,
             PANEL_ADDRESS, SOURCE_ADDRESS_PLACEHOLDER, CMD_SET_CIRCUIT, 0x02, CIRCUIT_NUM_PLACEHOLDER,
