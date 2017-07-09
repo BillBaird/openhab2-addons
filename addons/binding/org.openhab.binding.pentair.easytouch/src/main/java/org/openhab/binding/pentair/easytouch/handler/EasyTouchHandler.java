@@ -353,6 +353,10 @@ public class EasyTouchHandler extends BaseThingHandler {
         }
     }
 
+    public String getItemNames(int circuitNum) {
+        return getItemNames(panel.getCircuitFeatureChannel(circuitNum));
+    }
+
     public String getItemNames(Channel channel) {
         Set<Item> items = this.getItems(channel);
         StringBuilder sb = new StringBuilder();

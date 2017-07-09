@@ -109,17 +109,10 @@ public class Panel {
                 lastDriftSecs = drift;
                 driftLastSet = now;
             }
-            // Update drift if it is closer to zero
-            if (drift >= 0) {
-                if (drift < lastDriftSecs) {
-                    lastDriftSecs = drift;
-                    driftLastSet = now;
-                }
-            } else {
-                if (drift > lastDriftSecs) {
-                    lastDriftSecs = drift;
-                    driftLastSet = now;
-                }
+            // Find the smallest drift ... even if negative (smallest will be the point when the panel minute changes)
+            if (drift < lastDriftSecs) {
+                lastDriftSecs = drift;
+                driftLastSet = now;
             }
             // If it has been 10 minutes since we last captured a minimum value, publish it and start over
             if ((now.getTimeInMillis() - driftLastSet.getTimeInMillis()) > Const.TEN_MINUTES) {
@@ -166,6 +159,14 @@ public class Panel {
             pumps[i - 1] = new Pump(pumpChannel, wattsChannel, rpmsChannel, i);
         }
         msgFactory = new MessageFactory(handler);
+    }
+
+    public Channel getCircuitFeatureChannel(int circuitNum) {
+        if (circuitNum <= 10) {
+            return circuits[circuitNum - 1].channel;
+        } else {
+            return features[circuitNum - 11].channel;
+        }
     }
 
     public void consumePumpStatusMessage(Message msg) {

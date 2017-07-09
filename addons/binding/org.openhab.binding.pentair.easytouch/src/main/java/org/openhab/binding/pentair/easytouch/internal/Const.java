@@ -23,9 +23,18 @@ class Const {
     final static int CHK_SUM_1_PLACEHOLDER = PLACEHOLDER;
     final static int CHK_SUM_2_PLACEHOLDER = PLACEHOLDER;
 
-    // Command Sequence Templates
+    // Commands
     final static byte CMD_SET_ACK = 0x01;
-    final static byte CMD_SET_CIRCUIT = (byte) 0x86;
+    final static byte CMD_PANEL_STATUS = 0x02;
+    final static byte CMD_SET_CONTROL = 0x04;
+    final static byte CMD_CURRENT_DATETIME = 0x05;
+    final static byte CMD_SET_RUN = 0x06;
+    final static byte CMD_PUMP_STATUS = 0x07;
+    final static byte CMD_TEMPERATURE_SET_POINTS = 0x08;
+    final static byte CMD_SET_DATETIME = (byte) 0x85;
+    final static byte CMD_SET_CIRCUIT_STATE = (byte) 0x86;
+    final static byte CMD_GET_DATETIME = (byte) 0xC5;
+    final static byte CMD_GET_TEMPERATURE_SET_POINTS = (byte) 0xC8; // Note sure of this one
 
     // Command (CFI) values
     final static byte CFI_PUMP_COMMAND = (byte) 0x01;
@@ -37,4 +46,6 @@ class Const {
     final static long TIMEZONE_RAW_OFFSET_MILLIS = Calendar.getInstance().getTimeZone().getRawOffset();
     final static long MILLIS_PER_DAY = 24 * 60 * 60 * 1000;
     final static long TEN_MINUTES = 10 * 60 * 1000;
+    final static String[] WEEKDAYS = new String[] { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
+            "Saturday" };
 }

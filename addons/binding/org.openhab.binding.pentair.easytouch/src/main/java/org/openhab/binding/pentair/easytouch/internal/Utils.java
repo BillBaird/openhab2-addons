@@ -74,132 +74,134 @@ public class Utils {
         return onOff == 0 ? "off" : onOff == 1 ? "on" : "<unknown OnOff state>";
     }
 
-    public static String getModeName(int mode1, int mode2, int mode3) {
-        if (mode1 == 0x00 && mode2 == 0x00 && mode3 == 0x00) {
-            return "all off";
-        }
-        String result = "";
-        if ((mode1 & 0x01) == 0x01) {
-            result += "Circulation, ";
-        }
-        if ((mode1 & 0x02) == 0x02) {
-            result += "SPA light, ";
-        }
-        if ((mode1 & 0x04) == 0x04) {
-            result += "Pool light, ";
-        }
-        if ((mode1 & 0x08) == 0x08) {
-            result += "Spa Jets, ";
-        }
-        if ((mode1 & 0x10) == 0x10) {
-            result += "Air Blower, ";
-        }
-        if ((mode1 & 0x20) == 0x20) {
-            result += "Pool Vac m1x40, ";
-        }
-        if ((mode1 & 0x40) == 0x40) {
-            result += "Edge Pump, ";
-        }
-        if ((mode1 & 0x80) == 0x80) {
-            result += "Spillway, ";
-        }
-        if ((mode2 & 0x01) == 0x01) {
-            result += "Patio Lights, ";
-        }
-        if ((mode2 & 0x02) == 0x02) {
-            result += "<Mode2 0x02>, ";
-        }
-        if ((mode2 & 0x04) == 0x04) {
-            result += "Pool Vac M2x04, ";
-        }
-        if ((mode2 & 0x08) == 0x08) {
-            result += "Edge Pump+, ";
-        }
-        if ((mode2 & 0x10) == 0x10) {
-            result += "Filter 3200, ";
-        }
-        if ((mode2 & 0x20) == 0x20) {
-            result += "Edge 3200, ";
-        }
-        if ((mode2 & 0x40) == 0x40) {
-            result += "Feature 5, ";
-        }
-        if ((mode2 & 0x80) == 0x80) {
-            result += "Feature 6, ";
-        }
-        if ((mode3 & 0x01) == 0x01) {
-            result += "Feature 7, ";
-        }
-        if ((mode3 & 0x02) == 0x02) {
-            result += "Feature 8, ";
-        }
-        if ((mode3 & 0x04) == 0x04) {
-            result += "<Mode3 0x04>, ";
-        }
-        if ((mode3 & 0x08) == 0x08) {
-            result += "AuxEx, ";
-        }
-        if ((mode3 & 0x10) == 0x10) {
-            result += "<Mode3 0x10>, ";
-        }
-        if ((mode3 & 0x20) == 0x20) {
-            result += "<Mode3 0x20>, ";
-        }
-        if ((mode3 & 0x40) == 0x40) {
-            result += "<Mode3 0x40>, ";
-        }
-        if ((mode3 & 0x80) == 0x80) {
-            result += "<Mode3 0x80>, ";
-        }
-        if (result.length() > 2) {
-            return result.substring(0, result.length() - 2);
-        }
-        return "???";
-    }
-
-    public static String getCircuitName(int circuit) {
-        switch (circuit) {
-            case 0x01:
-                return "Circulation Pump";
-            case 0x02:
-                return "Spa Light";
-            case 0x03:
-                return "Pool Light";
-            case 0x04:
-                return "Spa Jets";
-            case 0x05:
-                return "Air Blower";
-            case 0x06:
-                return "Pool Vac 0x06";
-            case 0x07:
-                return "Edge Pump";
-            case 0x08:
-                return "Spillway";
-            case 0x09:
-                return "Patio Lights";
-            case 0x0B:
-                return "Pool Vac";
-            case 0x0C:
-                return "Edge Pump+";
-            case 0x0D:
-                return "Filter 3200";
-            case 0x0E:
-                return "Edge 3200";
-            case 0x0F:
-                return "Feature 5";
-            case 0x10:
-                return "Feature 6";
-            case 0x11:
-                return "Feature 7";
-            case 0x12:
-                return "Feature 8";
-            case 0x14:
-                return "AuxEx";
-            default:
-                return "<unknown>";
-        }
-    }
-
+    /*
+     * public static String getModeName(int mode1, int mode2, int mode3) {
+     * if (mode1 == 0x00 && mode2 == 0x00 && mode3 == 0x00) {
+     * return "all off";
+     * }
+     * String result = "";
+     * if ((mode1 & 0x01) == 0x01) {
+     * result += "Circulation, ";
+     * }
+     * if ((mode1 & 0x02) == 0x02) {
+     * result += "SPA light, ";
+     * }
+     * if ((mode1 & 0x04) == 0x04) {
+     * result += "Pool light, ";
+     * }
+     * if ((mode1 & 0x08) == 0x08) {
+     * result += "Spa Jets, ";
+     * }
+     * if ((mode1 & 0x10) == 0x10) {
+     * result += "Air Blower, ";
+     * }
+     * if ((mode1 & 0x20) == 0x20) {
+     * result += "Pool Vac m1x40, ";
+     * }
+     * if ((mode1 & 0x40) == 0x40) {
+     * result += "Edge Pump, ";
+     * }
+     * if ((mode1 & 0x80) == 0x80) {
+     * result += "Spillway, ";
+     * }
+     * if ((mode2 & 0x01) == 0x01) {
+     * result += "Patio Lights, ";
+     * }
+     * if ((mode2 & 0x02) == 0x02) {
+     * result += "<Mode2 0x02>, ";
+     * }
+     * if ((mode2 & 0x04) == 0x04) {
+     * result += "Pool Vac M2x04, ";
+     * }
+     * if ((mode2 & 0x08) == 0x08) {
+     * result += "Edge Pump+, ";
+     * }
+     * if ((mode2 & 0x10) == 0x10) {
+     * result += "Filter 3200, ";
+     * }
+     * if ((mode2 & 0x20) == 0x20) {
+     * result += "Edge 3200, ";
+     * }
+     * if ((mode2 & 0x40) == 0x40) {
+     * result += "Feature 5, ";
+     * }
+     * if ((mode2 & 0x80) == 0x80) {
+     * result += "Feature 6, ";
+     * }
+     * if ((mode3 & 0x01) == 0x01) {
+     * result += "Feature 7, ";
+     * }
+     * if ((mode3 & 0x02) == 0x02) {
+     * result += "Feature 8, ";
+     * }
+     * if ((mode3 & 0x04) == 0x04) {
+     * result += "<Mode3 0x04>, ";
+     * }
+     * if ((mode3 & 0x08) == 0x08) {
+     * result += "AuxEx, ";
+     * }
+     * if ((mode3 & 0x10) == 0x10) {
+     * result += "<Mode3 0x10>, ";
+     * }
+     * if ((mode3 & 0x20) == 0x20) {
+     * result += "<Mode3 0x20>, ";
+     * }
+     * if ((mode3 & 0x40) == 0x40) {
+     * result += "<Mode3 0x40>, ";
+     * }
+     * if ((mode3 & 0x80) == 0x80) {
+     * result += "<Mode3 0x80>, ";
+     * }
+     * if (result.length() > 2) {
+     * return result.substring(0, result.length() - 2);
+     * }
+     * return "???";
+     * }
+     */
+    /*
+     * public static String getCircuitName(int circuit) {
+     * switch (circuit) {
+     * case 0x01:
+     * return "Circulation Pump";
+     * case 0x02:
+     * return "Spa Light";
+     * case 0x03:
+     * return "Pool Light";
+     * case 0x04:
+     * return "Spa Jets";
+     * case 0x05:
+     * return "Air Blower";
+     * case 0x06:
+     * return "Pool Vac 0x06";
+     * case 0x07:
+     * return "Edge Pump";
+     * case 0x08:
+     * return "Spillway";
+     * case 0x09:
+     * return "Patio Lights";
+     * case 0x0B:
+     * return "Pool Vac";
+     * case 0x0C:
+     * return "Edge Pump+";
+     * case 0x0D:
+     * return "Filter 3200";
+     * case 0x0E:
+     * return "Edge 3200";
+     * case 0x0F:
+     * return "Feature 5";
+     * case 0x10:
+     * return "Feature 6";
+     * case 0x11:
+     * return "Feature 7";
+     * case 0x12:
+     * return "Feature 8";
+     * case 0x14:
+     * return "AuxEx";
+     * default:
+     * return "<unknown>";
+     * }
+     * }
+     */
     public static String getAddrName(byte addr) {
         switch (addr & 0xF0) {
             case 0x00:
@@ -217,18 +219,28 @@ public class Utils {
 
     public static String getCommand(int cmd) {
         switch (cmd & 0xFF) {
-            case 0x01:
+            case Const.CMD_SET_ACK: // 0x01:
                 return "Acknowledge";
-            case 0x02:
+            case Const.CMD_PANEL_STATUS: // 0x02:
                 return "PanelStatus";
-            case 0x04:
+            case Const.CMD_SET_CONTROL: // 0x04:
                 return "SetControl";
-            case 0x06:
+            case Const.CMD_CURRENT_DATETIME: // 0x05:
+                return "CurrentDateTime";
+            case Const.CMD_SET_RUN: // 0x06:
                 return "Run";
-            case 0x07:
+            case Const.CMD_PUMP_STATUS: // 0x07:
                 return "PumpStatus";
-            case 0x86:
+            case Const.CMD_TEMPERATURE_SET_POINTS: // 0x08:
+                return "TemperatureSettings";
+            case Const.CMD_SET_DATETIME & 0xFF: // 0x85:
+                return "SetDateTime";
+            case Const.CMD_SET_CIRCUIT_STATE & 0xFF: // 0x86:
                 return "SetState";
+            case Const.CMD_GET_DATETIME & 0xFF: // 0xC5:
+                return "GetDateTime";
+            case Const.CMD_GET_TEMPERATURE_SET_POINTS & 0xFF: // 0xC8:
+                return "GetTemperatureSettings";
             default:
                 return "<command " + Utils.getByteStr(cmd) + " (" + (cmd & 0xFF) + ")>";
         }

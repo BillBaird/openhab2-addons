@@ -101,7 +101,7 @@ public class MessageReader implements SerialPortEventListener {
                     }
                     break;
                 case Preamble:
-                    msg = new Message();
+                    msg = new Message(m_panel.m_handler);
                     msg.other = (byte) b;
                     checksumCalc += b;
                     state = State.H1;
@@ -145,7 +145,6 @@ public class MessageReader implements SerialPortEventListener {
                     position++;
                     if (position == length) {
                         state = State.C1;
-                        // logger.debug("Calculated Checksum = " + checksumCalc);
                     }
                     break;
                 case C1:
@@ -163,56 +162,11 @@ public class MessageReader implements SerialPortEventListener {
                     if (checksumCalc == checksumMsg) {
                         // logger.debug("Finished C2 ... Do something with our message");
                         this.msgCnt++;
-
-                        // logger.debug(this.msgCnt + ": " + msg.toString() + " 0x" + Utils.getByteStr(checkSumBytes[0])
-                        // + Utils.getByteStr(checkSumBytes[1]));
-
-                        // logger.debug(this.msgCnt + ": " + msg.toString() + " 0x" + Utils.getByteStr(checkSumBytes[0])
-                        // + Utils.getByteStr(checkSumBytes[1]));
-
                         logger.debug("{}: {} {}", this.msgCnt, msg.toString(), Utils.formatCommandBytes(payload));
-
-                        // Utils.printBytes("Source ", source, " " + Utils.getAddrName(source[0]) + "\n");
-                        // Utils.printBytes("Dest ", dest, " " + Utils.getAddrName(dest[1]) + "\n");
-                        // if (length > 0) {
-                        // logger.debug("Len : " + length);
-                        // Utils.printBytes("Payload ", payload, "\n");
-                        // }
-                        // else
-                        // logger.debug("Payload : <empty>");
                         if (length > 0 && logger.isTraceEnabled()) {
                             logger.trace("Payload: {}", Utils.formatCommandBytes(payload));
                         }
-                        // if (length > 0) {
-                        // Utils.printBytes("Payload ", payload, "\n");
-                        // }
-                        // if (dest[1] == 0x10 && length == 2)
-                        // if (payload[1] == 01)
-                        // logger.debug("Turn " + Utils.getCircuitName(payload[0]) + " - " + payload[0] + " on");
-                        // else if (payload[1] == 00)
-                        // logger.debug("Turn " + Utils.getCircuitName(payload[0]) + " - " + payload[0] + " off");
                         msg.dispatchMessage(m_panel);
-                        // if (dest[1] == 0x0F && length == 29) {
-                        // logger.debug("Time : " + payload[0] + ":" + payload[1]);
-                        // logger.debug("Mode : " + payload[2] + " - "
-                        // + Utils.getModeName(payload[2], payload[3], payload[4]));
-                        // logger.debug("Temp : Pool = " + payload[14] + ", Spa = " + payload[15] + ", Air = "
-                        // + payload[18]);
-                        // m_panel.consumePanelStatusMessage(payload);
-                        // }
-                        // if (dest[1] == 0x10 && length == 15) {
-                        // System.out
-                        // .println("Pump : "
-                        // + (source[0] == 0x60 ? "Circulation"
-                        // : (source[0] == 0x61 ? "Edge" : "<Unknown>"))
-                        // + " is " + (payload[12] == 0x01 ? "on" : "off"));
-                        // logger.debug("Time : " + payload[13] + ":" + payload[14]);
-                        // if (payload[12] == 0x01) {
-                        // logger.debug("Watts : " + (payload[3] * 256 + payload[4]));
-                        // logger.debug("Rpms : " + (payload[5] * 256 + payload[6]));
-                        // }
-                        // }
-                        // Utils.printBytes("Checksum", checkSumBytes, "\n");
                     } else {
                         logger.debug("*********************** Checksums do not match ********************");
                     }

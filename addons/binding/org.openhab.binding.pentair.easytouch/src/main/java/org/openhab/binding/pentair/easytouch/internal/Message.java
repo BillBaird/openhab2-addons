@@ -2,12 +2,15 @@ package org.openhab.binding.pentair.easytouch.internal;
 
 import java.util.Calendar;
 
+import org.openhab.binding.pentair.easytouch.handler.EasyTouchHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Message {
 
     private static final Logger logger = LoggerFactory.getLogger(Message.class);
+
+    private final EasyTouchHandler m_handler;
 
     public byte source;
     public byte cfi;
@@ -18,7 +21,8 @@ public class Message {
     public int checksum;
     public byte[] command;
 
-    public Message() {
+    public Message(EasyTouchHandler handler) {
+        m_handler = handler;
     }
 
     public void dispatchMessage(Panel panel) {
@@ -122,30 +126,38 @@ public class Message {
 
     public String getCfiStr() {
         switch (this.cfi & 0xFF) {
-            case 0x01:
+            case Const.CMD_SET_ACK: // 0x01:
                 if ((Utils.isPanel(this.source) && Utils.isPump(this.dest))
                         || (Utils.isPanel(this.dest) && Utils.isPump(this.source))) {
                     return this.getPumpCommandStr();
                 } else {
                     return "Acknowledge " + Utils.getCommand(payload[0]);
                 }
-            case 0x02:
+            case Const.CMD_PANEL_STATUS: // 0x02:
                 return "PanelStatus " + payload[0] + ":" + payload[1] + " Diff: "
                         + calcClockDiff(payload[0], payload[1]);
-            case 0x04:
+            case Const.CMD_SET_CONTROL: // 0x04:
                 return "SetControl "
                         + (payload[0] == 0x00 ? "Local" : payload[0] == 0x0FF ? "Remote" : "<UnknownControl>");
-            case 0x06:
+            case Const.CMD_CURRENT_DATETIME: // 0x05:
+                return String.format("Current DateTime %2d:%2d %s %2d/%2d/%2d", payload[0], payload[1],
+                        Const.WEEKDAYS[payload[2] - 1], payload[4], payload[3], payload[5]);
+            case Const.CMD_SET_RUN: // 0x06:
                 return "SetRun " + (payload[0] == 0x0A ? "Start" : payload[0] == 0x04 ? "Stop" : "<UnknownRun>");
-            case 0x07:
+            case Const.CMD_PUMP_STATUS: // 0x07:
                 return "PumpStatus " + payload[13] + ":" + payload[14] + " Diff: "
                         + calcClockDiff(payload[13], payload[14]);
-            case 0x08:
+            case Const.CMD_TEMPERATURE_SET_POINTS: // 0x08:
                 return "SetPoints? " + "Pool Set to " + payload[3] + ", Spa Set to " + payload[4] + ", Air Temp "
                         + payload[2] + " - More UNKNOWN";
-            case 0x86:
-                return "SetState " + Utils.getCircuitName(payload[0]) + " " + Utils.getOnOff(payload[1]);
-            case 0xC8:
+            case Const.CMD_SET_DATETIME & 0xFF: // 0x85:
+                return String.format("Current DateTime %2d:%2d %s %2d/%2d/%2d", payload[0], payload[1],
+                        Const.WEEKDAYS[payload[2] - 1], payload[4], payload[3], payload[5]);
+            case Const.CMD_SET_CIRCUIT_STATE & 0xFF: // 0x86:
+                return "Set Circuit State " + m_handler.getItemNames(payload[0]) + " " + Utils.getOnOff(payload[1]);
+            case Const.CMD_GET_DATETIME & 0xFF: // 0xC5:
+                return "Get DateTime";
+            case Const.CMD_GET_TEMPERATURE_SET_POINTS & 0xFF: // 0xC8:
                 return "Get SetPoints? ";
             default:
                 return Utils.getCommand(this.cfi);
