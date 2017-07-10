@@ -85,7 +85,7 @@ public class MySqlLogger {
 
             String cmd = "CREATE TABLE IF NOT EXISTS PentairRawLog (" + "Id int NOT NULL AUTO_INCREMENT, "
                     + "Time DATETIME, " + "RawHeader varchar(100), " + "Source varchar(20), " + "Dest varchar(20), "
-                    + "Command varchar(20), " + "Len int, " + "Payload varchar(200), "
+                    + "Command varchar(30), " + "Len int, " + "Payload varchar(200), "
                     + "Interpretation varchar(20000), " + "PRIMARY KEY(Id));";
             Statement st = connection.createStatement();
             st.executeUpdate(cmd);
