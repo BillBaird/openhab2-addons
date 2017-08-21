@@ -17,6 +17,8 @@ public class Panel {
     private Logger logger = LoggerFactory.getLogger(Panel.class);
     EasyTouchHandler m_handler;
 
+    Calendar nextTimeToSetClock = null;
+
     public class Circuit {
         public final Channel channel;
         public final int circuitNum;
@@ -86,11 +88,16 @@ public class Panel {
     }
 
     public class ClockDrift {
+
+        public EasyTouchHandler handler;
+        public MessageFactory msgFactory;
         public Channel clockDriftChannel;
         public Calendar driftLastSet;
         public long lastDriftSecs;
 
-        public ClockDrift(EasyTouchHandler handler) {
+        public ClockDrift(EasyTouchHandler handler, MessageFactory msgFactory) {
+            this.handler = handler;
+            this.msgFactory = msgFactory;
             clockDriftChannel = handler.getThing().getChannel("clock-drift");
         }
 
@@ -114,11 +121,37 @@ public class Panel {
                 lastDriftSecs = drift;
                 driftLastSet = now;
             }
+            long nowInMillis = now.getTimeInMillis();
             // If it has been 10 minutes since we last captured a minimum value, publish it and start over
-            if ((now.getTimeInMillis() - driftLastSet.getTimeInMillis()) > Const.TEN_MINUTES) {
+            if ((nowInMillis - driftLastSet.getTimeInMillis()) > Const.TEN_MINUTES) {
                 State state = new DecimalType(lastDriftSecs);
-                m_handler.updateState(clockDriftChannel, state);
+                handler.updateState(clockDriftChannel, state);
                 driftLastSet = null;
+
+                // ReSync if needed
+                if (handler.getMaxClockDriftSecs() > 0 && (lastDriftSecs > handler.getMaxClockDriftSecs()
+                        || lastDriftSecs + handler.getMaxClockDriftSecs() < 0)) {
+                    // Adjust to local time
+                    nowInMillis = (nowInMillis + Const.TIMEZONE_RAW_OFFSET_MILLIS) % Const.MILLIS_PER_DAY;
+                    logger.info("nowInMillis {}, {}, {}", nowInMillis, handler.getClockResyncStartTimeMillis(),
+                            handler.getClockResyncEndTimeMillis());
+                    // ReSync if safe
+                    if (nowInMillis >= handler.getClockResyncStartTimeMillis()
+                            && nowInMillis < handler.getClockResyncEndTimeMillis()) {
+
+                        // Set the clock up to 2 minutes from now. 2 rather than 1 so that bias can be added later.
+                        Calendar newTime = (Calendar) now.clone();
+                        newTime.add(Calendar.MINUTE, 2);
+                        newTime.set(Calendar.SECOND, 0);
+                        newTime.set(Calendar.MILLISECOND, 0);
+                        newTime.add(Calendar.SECOND, handler.getClockSetBiasSeconds());
+                        synchronized (this) {
+                            nextTimeToSetClock = (Calendar) newTime.clone();
+                        }
+                        logger.info("Clock drift of {} exceeds {}, will reset clock", lastDriftSecs,
+                                handler.getMaxClockDriftSecs());
+                    }
+                }
             }
         }
     }
@@ -140,7 +173,8 @@ public class Panel {
         airTempChannel = handler.getThing().getChannel("temp-airtemp");
         poolTempChannel = handler.getThing().getChannel("temp-pooltemp");
         spaTempChannel = handler.getThing().getChannel("temp-spatemp");
-        clockDrift = new ClockDrift(handler);
+        msgFactory = new MessageFactory(handler);
+        clockDrift = new ClockDrift(handler, msgFactory);
         circuits = new Circuit[10];
         for (int i = 1; i <= 10; i++) {
             Channel channel = handler.getThing().getChannel("equipment-circuit" + i);
@@ -158,7 +192,6 @@ public class Panel {
             Channel rpmsChannel = handler.getThing().getChannel("rpms-pump" + i);
             pumps[i - 1] = new Pump(pumpChannel, wattsChannel, rpmsChannel, i);
         }
-        msgFactory = new MessageFactory(handler);
     }
 
     public Channel getCircuitFeatureChannel(int circuitNum) {
@@ -332,6 +365,25 @@ public class Panel {
 
     public void handleAcknowledgement(Message msg) {
         m_handler.handleAcknowledgement(msg);
+    }
+
+    public void writeNewTime() {
+        Calendar nextTimeToSet = nextTimeToSetClock;
+        if (nextTimeToSet != null) {
+            if (Calendar.getInstance().compareTo(nextTimeToSet) >= 0) {
+                synchronized (this) {
+                    // Undo the bias that was added in earlier. Subtract it out to get back to the whole minute.
+                    nextTimeToSet.add(Calendar.SECOND, -m_handler.getClockSetBiasSeconds());
+                    Message msgSetClockAck = msgFactory.makeSetDateTimeAck();
+                    Message msgSetClock = msgFactory.makeSetDateTime(nextTimeToSet);
+                    if (logger.isInfoEnabled()) {
+                        logger.info("Set Clock: {}", Utils.formatCommandBytes(msgSetClock));
+                    }
+                    m_handler.write(msgSetClock, msgSetClockAck);
+                    nextTimeToSetClock = null;
+                }
+            }
+        }
     }
 
     public void logMsg(Message msg) {

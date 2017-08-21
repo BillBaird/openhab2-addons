@@ -82,6 +82,27 @@
                 <default>1000</default>
             </parameter>
             
+            <parameter name="clockMaxDriftSeconds" type="integer" required="false">
+                <label>ClockMaxDriftSeconds</label>
+                <description>The maximum number of seconds the Pentair clock may drift before being synchronized with the current server time, which should be using NTP.</description>
+                <default>5</default>
+            </parameter>                        
+            <parameter name="clockSetBiasSeconds" type="integer" required="false">
+                <label>ClockSetBiasSeconds</label>
+                <description>Seconds to bias when clock set occurs relative to the minute change.  This is capped at +/- clockMaxDriftSeconds - 2.</description>
+                <default>0</default>
+            </parameter> 
+            <parameter name="safeToSyncStartTimeOfDay" type="integer" required="false" min="0" max="2359">
+                <label>SafeToSyncStartTimeOfDay</label>
+                <description>The starting time of day, to the minute, at which a clock synchronization may occur.  Valid times are 0 to 2359.  Default 0.  Suggest avoiding when equipment schedules are running.</description>
+                <default>0</default>
+            </parameter>            
+            <parameter name="safeToSyncEndTimeOfDay" type="integer" required="false" min="0" max="2359">
+                <label>SafeToSyncEndTimeOfDay</label>
+                <description>The ending time of day, to the minute, at which a clock synchronization may occur.  Valid times are 0 to 2359.  Default 2359.  Suggest avoiding when equipment schedules are running.</description>
+                <default>2359</default>
+            </parameter>            
+            
             <parameter name="mySqlUrl" type="text" required="false">
                 <label>Logging MySql URL</label>
                 <description>The MySql URL for message logging (e.g. jdbc:mysql://127.0.0.1:3306/OpenHAB).</description>

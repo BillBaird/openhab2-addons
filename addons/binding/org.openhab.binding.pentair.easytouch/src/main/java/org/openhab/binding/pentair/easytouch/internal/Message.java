@@ -39,6 +39,7 @@ public class Message {
              */
         }
         panel.logMsg(this);
+        panel.writeNewTime();
     }
 
     public boolean matches(Message m) {

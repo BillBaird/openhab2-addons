@@ -77,6 +77,11 @@ public class EasyTouchHandler extends BaseThingHandler {
     private ArrayList<PendingResponse> m_pendingResponseList = new ArrayList<PendingResponse>();
     private MySqlLogger msgLog;
 
+    private int maxClockDriftSecs = 5;
+    private int clockSetBiasSeconds = 0;
+    private int clockResyncStartTimeMillis = 0;
+    private int clockResyncEndTimeMillis = 24 * 60 * 60 * 1000;
+
     public EasyTouchHandler(Thing thing) {
         super(thing);
     }
@@ -215,6 +220,28 @@ public class EasyTouchHandler extends BaseThingHandler {
             logger.error("Could not configure PentairEasytouch instance", e);
         }
 
+        maxClockDriftSecs = configuration.clockMaxDriftSeconds;
+        clockSetBiasSeconds = configuration.clockSetBiasSeconds;
+        if (clockSetBiasSeconds > 0 && maxClockDriftSecs > 2 && clockSetBiasSeconds > maxClockDriftSecs - 2) {
+            clockSetBiasSeconds = maxClockDriftSecs - 2;
+        } else if (clockSetBiasSeconds < 0 && maxClockDriftSecs > 2 && -clockSetBiasSeconds > maxClockDriftSecs - 2) {
+            clockSetBiasSeconds = -maxClockDriftSecs + 2;
+        }
+        clockResyncStartTimeMillis = (configuration.safeToSyncStartTimeOfDay / 100 * 60
+                + configuration.safeToSyncStartTimeOfDay % 100) * 60 * 1000;
+        clockResyncEndTimeMillis = ((configuration.safeToSyncEndTimeOfDay / 100 * 60
+                + configuration.safeToSyncEndTimeOfDay % 100) + 1) * 60 * 1000;
+        if (maxClockDriftSecs <= 0) {
+            logger.info("Automatic clock synchronization disabled");
+        } else {
+            String msg = String.format(
+                    "Clock synchronization set at +/-%d seconds with a bias of %d seconds between %02d:%02d and %02d:%02d",
+                    maxClockDriftSecs, clockSetBiasSeconds, configuration.safeToSyncStartTimeOfDay / 100,
+                    configuration.safeToSyncStartTimeOfDay % 100, configuration.safeToSyncEndTimeOfDay / 100,
+                    configuration.safeToSyncEndTimeOfDay % 100);
+            logger.info(msg);
+        }
+
         return configuration;
     }
 
@@ -223,7 +250,6 @@ public class EasyTouchHandler extends BaseThingHandler {
      *
      * @throws InitializationException if port can not be opened
      */
-    @SuppressWarnings("rawtypes")
     public void openPort() {
         try {
             // Handle SYMLINK port specification if it exists (for Linux systems), since the port may change on a
@@ -377,6 +403,22 @@ public class EasyTouchHandler extends BaseThingHandler {
 
     public MySqlLogger getMsgLog() {
         return this.msgLog;
+    }
+
+    public int getMaxClockDriftSecs() {
+        return maxClockDriftSecs;
+    }
+
+    public int getClockSetBiasSeconds() {
+        return clockSetBiasSeconds;
+    }
+
+    public int getClockResyncStartTimeMillis() {
+        return clockResyncStartTimeMillis;
+    }
+
+    public int getClockResyncEndTimeMillis() {
+        return clockResyncEndTimeMillis;
     }
 
 }

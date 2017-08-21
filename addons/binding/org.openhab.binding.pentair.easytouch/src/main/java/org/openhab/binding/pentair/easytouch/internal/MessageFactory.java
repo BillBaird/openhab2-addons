@@ -25,14 +25,7 @@ class MessageFactory {
     }
 
     Message makeOnOffAck() {
-        Message msg = new Message(m_handler);
-        msg.other = 0x01;
-        msg.source = Const.PANEL_ADDRESS;
-        msg.dest = m_handler.getBinderAddress();
-        msg.cfi = Const.CMD_SET_ACK;
-        msg.length = 1;
-        msg.payload = new int[] { Const.CMD_SET_CIRCUIT_STATE & 0xFF };
-        return msg;
+        return makeSimpleAck(Const.CMD_SET_CIRCUIT_STATE);
     }
 
     Message makeSetDateTime(Calendar dt) {
@@ -44,6 +37,21 @@ class MessageFactory {
         msg.length = 8;
         msg.payload = new int[] { dt.get(Calendar.HOUR_OF_DAY), dt.get(Calendar.MINUTE), dt.get(Calendar.DAY_OF_WEEK),
                 dt.get(Calendar.DAY_OF_MONTH), dt.get(Calendar.MONTH) + 1, dt.get(Calendar.YEAR) % 100, 0, 0 };
+        return msg;
+    }
+
+    Message makeSetDateTimeAck() {
+        return makeSimpleAck(Const.CMD_SET_DATETIME);
+    }
+
+    Message makeSimpleAck(byte msgType) {
+        Message msg = new Message(m_handler);
+        msg.other = 0x01;
+        msg.source = Const.PANEL_ADDRESS;
+        msg.dest = m_handler.getBinderAddress();
+        msg.cfi = Const.CMD_SET_ACK;
+        msg.length = 1;
+        msg.payload = new int[] { msgType & 0xFF };
         return msg;
     }
 }
