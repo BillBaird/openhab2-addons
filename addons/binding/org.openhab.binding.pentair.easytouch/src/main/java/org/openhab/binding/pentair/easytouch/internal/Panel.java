@@ -87,6 +87,16 @@ public class Panel {
         }
     }
 
+    public static long calcClockDiff(int hours, int minutes) {
+        return calcClockDiff(hours, minutes, Calendar.getInstance());
+    }
+
+    public static long calcClockDiff(int hours, int minutes, Calendar now) {
+        long msgTimeSecs = hours * 3600 + minutes * 60;
+        long currentTimeSecs = (now.getTimeInMillis() + Const.TIMEZONE_RAW_OFFSET_MILLIS) % Const.MILLIS_PER_DAY / 1000;
+        return currentTimeSecs - msgTimeSecs;
+    }
+
     public class ClockDrift {
 
         public EasyTouchHandler handler;
@@ -99,13 +109,6 @@ public class Panel {
             this.handler = handler;
             this.msgFactory = msgFactory;
             clockDriftChannel = handler.getThing().getChannel("clock-drift");
-        }
-
-        private long calcClockDiff(int hours, int minutes, Calendar now) {
-            long msgTimeSecs = hours * 3600 + minutes * 60;
-            long currentTimeSecs = (now.getTimeInMillis() + Const.TIMEZONE_RAW_OFFSET_MILLIS) % Const.MILLIS_PER_DAY
-                    / 1000;
-            return msgTimeSecs - currentTimeSecs;
         }
 
         public void captureDrift(int hours, int minutes) {
@@ -148,7 +151,7 @@ public class Panel {
                         synchronized (this) {
                             nextTimeToSetClock = (Calendar) newTime.clone();
                         }
-                        logger.info("Clock drift of {} exceeds {}, will reset clock", lastDriftSecs,
+                        logger.info("Clock drift of {} exceeds +/-{}, will reset clock", lastDriftSecs,
                                 handler.getMaxClockDriftSecs());
                     }
                 }

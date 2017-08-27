@@ -118,13 +118,6 @@ public class Message {
         }
     }
 
-    private long calcClockDiff(int hours, int minutes) {
-        long msgTimeSecs = hours * 3600 + minutes * 60;
-        long currentTimeSecs = (Calendar.getInstance().getTimeInMillis() + Const.TIMEZONE_RAW_OFFSET_MILLIS)
-                % Const.MILLIS_PER_DAY / 1000;
-        return msgTimeSecs - currentTimeSecs;
-    }
-
     public String getCfiStr() {
         switch (this.cfi & 0xFF) {
             case Const.CMD_SET_ACK: // 0x01:
@@ -136,7 +129,7 @@ public class Message {
                 }
             case Const.CMD_PANEL_STATUS: // 0x02:
                 return "PanelStatus " + payload[0] + ":" + payload[1] + " Diff: "
-                        + calcClockDiff(payload[0], payload[1]);
+                        + Panel.calcClockDiff(payload[0], payload[1]);
             case Const.CMD_SET_CONTROL: // 0x04:
                 return "SetControl "
                         + (payload[0] == 0x00 ? "Local" : payload[0] == 0x0FF ? "Remote" : "<UnknownControl>");
@@ -147,7 +140,7 @@ public class Message {
                 return "SetRun " + (payload[0] == 0x0A ? "Start" : payload[0] == 0x04 ? "Stop" : "<UnknownRun>");
             case Const.CMD_PUMP_STATUS: // 0x07:
                 return "PumpStatus " + payload[13] + ":" + payload[14] + " Diff: "
-                        + calcClockDiff(payload[13], payload[14]);
+                        + Panel.calcClockDiff(payload[13], payload[14]);
             case Const.CMD_TEMPERATURE_SET_POINTS: // 0x08:
                 return "SetPoints? " + "Pool Set to " + payload[3] + ", Spa Set to " + payload[4] + ", Air Temp "
                         + payload[2] + " - More UNKNOWN";
