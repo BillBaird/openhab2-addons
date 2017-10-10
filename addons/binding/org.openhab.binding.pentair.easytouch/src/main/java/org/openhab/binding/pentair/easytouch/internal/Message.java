@@ -1,7 +1,5 @@
 package org.openhab.binding.pentair.easytouch.internal;
 
-import java.util.Calendar;
-
 import org.openhab.binding.pentair.easytouch.handler.EasyTouchHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -118,6 +116,57 @@ public class Message {
         }
     }
 
+    private String parseCustomName() {
+        int len = 11;
+        for (int i = 1; i <= 11; i++) {
+            if (payload[i] == 0x00) {
+                len = i - 1;
+                break;
+            }
+        }
+        char[] chars = new char[len];
+        for (int i = 0; i < len; i++) {
+            chars[i] = (char) payload[i + 1];
+        }
+        return new String(chars);
+    }
+
+    private String parsePumpCircuitSpeedMsg() {
+        String result = "Pump " + payload[0] + "(";
+        switch (payload[1]) {
+            case 0x06:
+                result += "VF";
+                break;
+            case 0x80:
+                result += "VS";
+                break;
+            case 0x40:
+                result += "VSF";
+                break;
+            default:
+                result += "unknown";
+                break;
+        }
+        if (payload[2] == 0F) {
+            result += "-no priming) ";
+        } else {
+            result += "-prime " + payload[2] + "minute@" + (payload[21] * 256 + payload[30]) + ") ";
+        }
+        for (int c = 0; c <= 7; c++) {
+            result += c + ":";
+            int circuit = payload[5 + c * 2];
+            if (circuit == 0) {
+                result += "unused";
+            } else {
+                result += circuit + "-" + (payload[6 + c * 2] * 256 + payload[22 + c]);
+            }
+            if (c < 7) {
+                result += ", ";
+            }
+        }
+        return result;
+    }
+
     public String getCfiStr() {
         switch (this.cfi & 0xFF) {
             case Const.CMD_SET_ACK: // 0x01:
@@ -144,15 +193,29 @@ public class Message {
             case Const.CMD_TEMPERATURE_SET_POINTS: // 0x08:
                 return "SetPoints? " + "Pool Set to " + payload[3] + ", Spa Set to " + payload[4] + ", Air Temp "
                         + payload[2] + " - More UNKNOWN";
+            case Const.CMD_CUSTOM_NAME: // 0x0A:
+                return "Custom Name " + payload[0] + " = " + parseCustomName();
+            case Const.CMD_PUMP_CIRCUIT_SPEEDS: // 0x18:
+                return "PumpCircuitSpeeds " + this.parsePumpCircuitSpeedMsg();
+
             case Const.CMD_SET_DATETIME & 0xFF: // 0x85:
                 return String.format("Current DateTime %2d:%2d %s %2d/%2d/%2d", payload[0], payload[1],
                         Const.WEEKDAYS[payload[2] - 1], payload[4], payload[3], payload[5]);
             case Const.CMD_SET_CIRCUIT_STATE & 0xFF: // 0x86:
                 return "Set Circuit State " + m_handler.getItemNames(payload[0]) + " " + Utils.getOnOff(payload[1]);
+            case Const.CMD_SET_CUSTOM_NAME & 0xFF: // 0x8A:
+                return "Set Custom Name " + payload[0] + " = " + parseCustomName();
+            case Const.CMD_SET_PUMP_CIRCUIT_SPEEDS & 0xFF: // 0x98:
+                return "Set PumpCircuitSpeeds " + this.parsePumpCircuitSpeedMsg();
+
             case Const.CMD_GET_DATETIME & 0xFF: // 0xC5:
                 return "Get DateTime";
             case Const.CMD_GET_TEMPERATURE_SET_POINTS & 0xFF: // 0xC8:
                 return "Get SetPoints? ";
+            case Const.CMD_GET_CUSTOM_NAME & 0xFF: // 0xCA:
+                return "Get Custom Name";
+            case Const.CMD_GET_PUMP_CIRCUIT_SPEEDS & 0xFF: // 0xD8:
+                return "Get PumpCircuitSpeeds";
             default:
                 return Utils.getCommand(this.cfi);
         }

@@ -233,14 +233,29 @@ public class Utils {
                 return "PumpStatus";
             case Const.CMD_TEMPERATURE_SET_POINTS: // 0x08:
                 return "TemperatureSettings";
+            case Const.CMD_CUSTOM_NAME: // 0x0A:
+                return "Custom Name";
+            case Const.CMD_PUMP_CIRCUIT_SPEEDS: // 0x18:
+                return "PumpSpeedSettings";
+
             case Const.CMD_SET_DATETIME & 0xFF: // 0x85:
                 return "SetDateTime";
             case Const.CMD_SET_CIRCUIT_STATE & 0xFF: // 0x86:
                 return "SetState";
+            case Const.CMD_SET_CUSTOM_NAME & 0xFF: // 0x8A:
+                return "SetCustomName";
+            case Const.CMD_SET_PUMP_CIRCUIT_SPEEDS & 0xFF: // 0x98:
+                return "SetPumpCircuitSpeeds";
+
             case Const.CMD_GET_DATETIME & 0xFF: // 0xC5:
                 return "GetDateTime";
             case Const.CMD_GET_TEMPERATURE_SET_POINTS & 0xFF: // 0xC8:
                 return "GetTemperatureSettings";
+            case Const.CMD_GET_CUSTOM_NAME & 0xFF: // 0xCA:
+                return "GetCustomName";
+            case Const.CMD_GET_PUMP_CIRCUIT_SPEEDS & 0xFF: // 0xD8:
+                return "GetPumpCircuitSpeeds";
+
             default:
                 return "<command " + Utils.getByteStr(cmd) + " (" + (cmd & 0xFF) + ")>";
         }
