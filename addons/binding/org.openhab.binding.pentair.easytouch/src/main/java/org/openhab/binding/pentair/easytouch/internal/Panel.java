@@ -20,14 +20,18 @@ public class Panel {
     Calendar nextTimeToSetClock = null;
 
     public class Circuit {
+        private final Panel panel;
         public final Channel channel;
         public final int circuitNum;
         public final int inx;
         public final int mask;
         public Boolean onOff;
         public boolean pendingResponse;
+        public int nameInx;
+        public int funcInx;
 
-        public Circuit(Channel channel, int circuitNum) {
+        public Circuit(Panel panel, Channel channel, int circuitNum) {
+            this.panel = panel;
             this.channel = channel;
             this.circuitNum = circuitNum;
             int i = circuitNum - 1;
@@ -39,18 +43,32 @@ public class Panel {
             this.mask = mask;
             this.onOff = null;
             this.pendingResponse = false;
+            this.nameInx = 0;
+            this.funcInx = 0;
+        }
+
+        public String getName() {
+            return panel.getCircuitInxName(nameInx);
+        }
+
+        public String getFunction() {
+            return Const.CIRCUIT_FUNCTIONS[funcInx];
         }
     }
 
     public class Feature {
+        private final Panel panel;
         public final Channel channel;
         public final int featureNum;
         public final int inx;
         public final int mask;
         public Boolean onOff;
         public boolean pendingResponse;
+        public int nameInx;
+        public int funcInx;
 
-        public Feature(Channel channel, int featureNum) {
+        public Feature(Panel panel, Channel channel, int featureNum) {
+            this.panel = panel;
             this.channel = channel;
             this.featureNum = featureNum;
             int i = 10 + featureNum - 1;
@@ -62,6 +80,16 @@ public class Panel {
             this.mask = mask;
             this.onOff = null;
             this.pendingResponse = false;
+            this.nameInx = 0;
+            this.funcInx = 0;
+        }
+
+        public String getName() {
+            return panel.getCircuitInxName(nameInx);
+        }
+
+        public String getFunction() {
+            return Const.CIRCUIT_FUNCTIONS[funcInx];
         }
     }
 
@@ -159,6 +187,8 @@ public class Panel {
         }
     }
 
+    private String[] custNames = { "USERNAME-01", "USERNAME-02", "USERNAME-03", "USERNAME-04", "USERNAME-05",
+            "USERNAME-06", "USERNAME-07", "USERNAME-08", "USERNAME-09", "USERNAME-10" };
     private Circuit[] circuits;
     private Feature[] features;
     private Pump[] pumps;
@@ -181,12 +211,12 @@ public class Panel {
         circuits = new Circuit[10];
         for (int i = 1; i <= 10; i++) {
             Channel channel = handler.getThing().getChannel("equipment-circuit" + i);
-            circuits[i - 1] = new Circuit(channel, i);
+            circuits[i - 1] = new Circuit(this, channel, i);
         }
         features = new Feature[10];
         for (int i = 1; i <= 10; i++) {
             Channel channel = handler.getThing().getChannel("equipment-feature" + i);
-            features[i - 1] = new Feature(channel, i);
+            features[i - 1] = new Feature(this, channel, i);
         }
         pumps = new Pump[8];
         for (int i = 1; i <= 8; i++) {
@@ -202,6 +232,35 @@ public class Panel {
             return circuits[circuitNum - 1].channel;
         } else {
             return features[circuitNum - 11].channel;
+        }
+    }
+
+    public String getCircuitFeatureName(int circuitNum) {
+        if (circuitNum <= 10) {
+            return circuits[circuitNum - 1].getName();
+        } else {
+            return features[circuitNum - 11].getName();
+        }
+    }
+
+    public String getCircuitFeatureFunction(int circuitNum) {
+        if (circuitNum <= 10) {
+            return circuits[circuitNum - 1].getFunction();
+        } else {
+            return features[circuitNum - 11].getFunction();
+        }
+    }
+
+    public void consumeCircuitDef(Message msg) {
+        int circuitNum = msg.payload[0];
+        if (circuitNum <= 10) {
+            Circuit circuit = circuits[circuitNum];
+            circuit.nameInx = msg.payload[2];
+            circuit.funcInx = msg.payload[1] & 0x0F;
+        } else {
+            Feature feature = features[circuitNum - 11];
+            feature.nameInx = msg.payload[2];
+            feature.funcInx = msg.payload[1] & 0x0F;
         }
     }
 
@@ -258,6 +317,23 @@ public class Panel {
                     }
                 }
             }
+        }
+    }
+
+    public void consumeCustomName(Message msg) {
+        int inx = msg.payload[0];
+        if (inx <= 9) {
+            this.custNames[inx] = msg.parseCustomName();
+        }
+    }
+
+    public String getCircuitInxName(int nameInx) {
+        if (nameInx < 200) {
+            return Utils.getCircuitName(nameInx);
+        } else if (nameInx < 210) {
+            return this.custNames[nameInx - 200];
+        } else {
+            return "Unknown Name 0x" + Utils.getByteStr(nameInx);
         }
     }
 
@@ -390,7 +466,7 @@ public class Panel {
     }
 
     public void logMsg(Message msg) {
-        m_handler.getMsgLog().logMsg(msg);
+        m_handler.getMsgLog().logMsg(msg, this);
     }
 
 }

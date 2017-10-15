@@ -35,6 +35,10 @@ public class Message {
              * } else if (cfi == Const.CFI_PUMP_COMMAND && dest == 0x10 && length == 02) {
              * panel.consumePumpCommandMessage(this);
              */
+        } else if (cmd == Const.CMD_CUSTOM_NAME) {
+            panel.consumeCustomName(this);
+        } else if (cmd == Const.CMD_CIRCUIT_DEF) {
+            panel.consumeCircuitDef(this);
         }
         panel.logMsg(this);
         panel.writeNewTime();
@@ -99,8 +103,8 @@ public class Message {
         return Utils.formatCommandBytes(payload);
     }
 
-    public String getInterpretationStr() {
-        return getCmdStr();
+    public String getInterpretationStr(Panel panel) {
+        return getCmdStr(panel);
     }
 
     public String getPanelPumpAckStr() {
@@ -130,14 +134,7 @@ public class Message {
     }
 
     public String getPanelPumpStatusStr() {
-        String result;
-        if (payload[0] == 0x01) {
-            result = "Pump 0 - ";
-        } else if (payload[0] == 0x02) {
-            result = "Pump 1 - ";
-        } else {
-            result = "Pump <unknown>";
-        }
+        String result = "Pump " + payload[0] + " - ";
         if (payload[13] == 0x00) {
             result += "off";
         } else {
@@ -152,7 +149,7 @@ public class Message {
         return result;
     }
 
-    private String parseCustomName() {
+    public String parseCustomName() {
         int len = 11;
         for (int i = 1; i <= 11; i++) {
             if (payload[i] == 0x00) {
@@ -186,7 +183,7 @@ public class Message {
         if (payload[2] == 0F) {
             result += "-no priming) ";
         } else {
-            result += "-prime " + payload[2] + "minute@" + (payload[21] * 256 + payload[30]) + ") ";
+            result += "-prime " + payload[2] + " minute@" + (payload[21] * 256 + payload[30]) + ") ";
         }
         for (int c = 0; c <= 7; c++) {
             result += c + ":";
@@ -203,7 +200,40 @@ public class Message {
         return result;
     }
 
-    public String getCmdStr() {
+    private String getCircuitDefStr(Panel panel) {
+        String result = payload[0] + ": ";
+        if (panel != null) {
+            result += panel.getCircuitInxName(payload[2]) + " (" + Const.CIRCUIT_FUNCTIONS[payload[1] & 0x0F] + ")";
+        } else {
+            result += Utils.getCircuitName(payload[2]) + " (" + Const.CIRCUIT_FUNCTIONS[payload[1] & 0x0F] + ")";
+        }
+        if ((payload[1] & 0x40) == 0x40) {
+            result += ", On w/Freeze";
+        }
+        return result;
+    }
+
+    private String getScheduleStr(Panel panel) {
+        String result = payload[0] + ": ";
+        result += "Circuit " + payload[1];
+        if (panel != null) {
+            result += " (" + panel.getCircuitFeatureName(payload[1]) + ")";
+        }
+        if ((payload[6] & 0xFF) == 0xFF) {
+            result += String.format(", on %02d:%02d, off %02d:%02d", payload[2], payload[3], payload[4], payload[5]);
+        } else if (payload[6] == 0x00) {
+            if (payload[2] == 25) {
+                result += ", not configured";
+            } else {
+                result += ", unexpected value " + Utils.getByteStr(payload[2]) + " at byte 2";
+            }
+        } else {
+            result += ", unexpected value " + Utils.getByteStr(payload[6]) + " at byte 6";
+        }
+        return result;
+    }
+
+    public String getCmdStr(Panel panel) {
         switch (this.cmd & 0xFF) {
             case Const.CMD_SET_ACK: // 0x01:
                 if (Utils.isPanel(this.source) && Utils.isPump(this.dest)) {
@@ -220,7 +250,7 @@ public class Message {
                 return "SetControl "
                         + (payload[0] == 0x00 ? "Local" : payload[0] == 0x0FF ? "Remote" : "<UnknownControl>");
             case Const.CMD_CURRENT_DATETIME: // 0x05:
-                return String.format("Current DateTime %2d:%2d %s %2d/%2d/%2d", payload[0], payload[1],
+                return String.format("Current DateTime %02d:%02d %s %02d/%02d/%02d", payload[0], payload[1],
                         Const.WEEKDAYS[payload[2] - 1], payload[4], payload[3], payload[5]);
             case Const.CMD_SET_RUN: // 0x06:
                 return "SetRun " + (payload[0] == 0x0A ? "Start" : payload[0] == 0x04 ? "Stop" : "<UnknownRun>");
@@ -232,31 +262,43 @@ public class Message {
                         + payload[2] + " - More UNKNOWN";
             case Const.CMD_CUSTOM_NAME: // 0x0A:
                 return "Custom Name " + payload[0] + " = " + parseCustomName();
+            case Const.CMD_CIRCUIT_DEF: // 0x0B:
+                return "Circuit Def " + getCircuitDefStr(panel);
+            case Const.CMD_SCHEDULE: // 0x11:
+                return "Schedule " + getScheduleStr(panel);
             case Const.CMD_PANEL_PUMP_STATUS: // 0x17:
                 return "PanelPumpStatus " + this.getPanelPumpStatusStr();
             case Const.CMD_PUMP_CIRCUIT_SPEEDS: // 0x18:
                 return "PumpCircuitSpeeds " + this.parsePumpCircuitSpeedMsg();
 
             case Const.CMD_SET_DATETIME & 0xFF: // 0x85:
-                return String.format("Current DateTime %2d:%2d %s %2d/%2d/%2d", payload[0], payload[1],
+                return String.format("Current DateTime %02d:%02d %s %02d/%02d/%02d", payload[0], payload[1],
                         Const.WEEKDAYS[payload[2] - 1], payload[4], payload[3], payload[5]);
             case Const.CMD_SET_CIRCUIT_STATE & 0xFF: // 0x86:
                 return "Set Circuit State " + m_handler.getItemNames(payload[0]) + " " + Utils.getOnOff(payload[1]);
             case Const.CMD_SET_CUSTOM_NAME & 0xFF: // 0x8A:
                 return "Set Custom Name " + payload[0] + " = " + parseCustomName();
+            case Const.CMD_SET_CIRCUIT_DEF & 0xFF: // 0x8B
+                return "Set Circuit Def " + getCircuitDefStr(panel);
+            case Const.CMD_SET_SCHEDULE & 0xFF: // 0x91
+                return "Set Schedule " + getScheduleStr(panel);
             case Const.CMD_SET_PUMP_CIRCUIT_SPEEDS & 0xFF: // 0x98:
                 return "Set PumpCircuitSpeeds " + this.parsePumpCircuitSpeedMsg();
 
             case Const.CMD_GET_DATETIME & 0xFF: // 0xC5:
                 return "Get DateTime";
             case Const.CMD_GET_TEMPERATURE_SET_POINTS & 0xFF: // 0xC8:
-                return "Get SetPoints? ";
+                return "Get SetPoints";
             case Const.CMD_GET_CUSTOM_NAME & 0xFF: // 0xCA:
-                return "Get Custom Name";
+                return "Get Custom Name " + Utils.getByteStr(payload[0]);
+            case Const.CMD_GET_CIRCUIT_DEF & 0xFF: // 0xCB
+                return "Get Circuit Def " + Utils.getByteStr(payload[0]);
+            case Const.CMD_GET_SCHEDULE & 0xFF: // 0xD1
+                return "Get Schedule " + Utils.getByteStr(payload[0]);
             case Const.CMD_GET_PANEL_PUMP_STATUS & 0xFF: // 0xD7:
-                return "Get Panel Pump Status";
+                return "Get Panel Pump Status - Pump " + payload[0];
             case Const.CMD_GET_PUMP_CIRCUIT_SPEEDS & 0xFF: // 0xD8:
-                return "Get PumpCircuitSpeeds";
+                return "Get Pump Circuit Speeds - Pump " + payload[0];
             default:
                 return Utils.getCommand(this.cmd);
         }
@@ -264,7 +306,7 @@ public class Message {
 
     @Override
     public String toString() {
-        return this.getHeaderByteStr() + " - " + this.getAddressStr() + ": " + this.getCmdStr() +
+        return this.getHeaderByteStr() + " - " + this.getAddressStr() + ": " + this.getCmdStr(null) +
         // ", " + Utils.getByteStr(this.other) +
                 " (" + this.length + " bytes)";
     }

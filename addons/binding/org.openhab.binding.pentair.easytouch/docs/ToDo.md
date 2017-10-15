@@ -4,3 +4,9 @@
 * Get Water Temp and last Timestamp from Panel.consumePanelStatusMessage
 
 * MySqlLogging is off when starting, even if it was when previously running.  However, item shows "on" if previously on.  Either have both show off, or properly handle preserved value and turn it on.
+
+decode PumpStatus message (0x07)
+Valves ... how assigned?
+Valves ... individually operate?
+Schedule ... week days?
+Schedule ... special temp behavior / settings?

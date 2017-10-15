@@ -56,8 +56,22 @@ class Const {
     final static byte CMD_PUMP_STATUS = 0x07; // Pump -> Panel, Panel -> Pump
     final static byte CMD_TEMPERATURE_SET_POINTS = 0x08; // Panel -> All
     final static byte CMD_CUSTOM_NAME = 0x0A; // Panel -> All
-    final static byte CMD_UNKNOWN_0B = 0x0B; // 14 00 5D 00 00 Panel -> All
-    final static byte CMD_UNKNOWN_11 = 0x11; // 0C 0B 19 00 05 00 00 Panel -> All
+    final static byte CMD_CIRCUIT_DEF = 0x0B; // 14 00 5D 00 00 Panel -> All
+    // 0: circuit #
+    // 1: & 0x40 on is on w/freeze
+    // 1: & 0x0F (function) 1=Spa, 7=Light, 0=Generic, 2=Pool, E=Spillway,
+    // 2: circuit name 48=Spa, 4A=Spa Light, 3F=Pool Light, 2E=Jets, 02=Air Blower, 3D=Pool (appear to be alphabetical)
+    // 2: C8=USERNAME-01, C9=USERNAME-02 etc.
+    // 3: always 00
+    // 4: always 00
+    final static byte CMD_SCHEDULE = 0x11; // 0C 0B 19 00 05 00 00 Panel -> All
+    // 0: schedule #
+    // 1: Associated Circuit?
+    // 2: Starttime hour
+    // 3: Starttime minute
+    // 4: Endtime hour
+    // 5: Endtime minute
+    // 6: FF => In Use?
     final static byte CMD_UNKNOWN_16 = 0x16; // 00 02 00 00 00 01 32 01 01 90 0D 7A 0F 82 00 00 Panel -> All
     final static byte CMD_PANEL_PUMP_STATUS = 0x17; // Panel -> All
     final static byte CMD_PUMP_CIRCUIT_SPEEDS = 0x18; // Panel -> All
@@ -77,6 +91,8 @@ class Const {
     final static byte CMD_SET_DATETIME = (byte) 0x85; // Wireless -> Panel
     final static byte CMD_SET_CIRCUIT_STATE = (byte) 0x86; // Wireless -> Panel
     final static byte CMD_SET_CUSTOM_NAME = (byte) 0x8A; // Wireless -> Panel
+    final static byte CMD_SET_CIRCUIT_DEF = (byte) 0x8B; // Wireless -> Panel
+    final static byte CMD_SET_SCHEDULE = (byte) 0x91; // Wireless -> Panel
     final static byte CMD_SET_UNKNOWN_96 = (byte) 0x96; // 00 02 00 00 00 01 32 01 01 90 0D 7A 0F 82 00 00 Wireless ->
                                                         // Panel
     final static byte CMD_SET_PUMP_CIRCUIT_SPEEDS = (byte) 0x98; // Wireless -> Panel
@@ -84,8 +100,9 @@ class Const {
     final static byte CMD_GET_DATETIME = (byte) 0xC5; // Wireless -> Panel
     final static byte CMD_GET_TEMPERATURE_SET_POINTS = (byte) 0xC8; // Note sure of this one
     final static byte CMD_GET_CUSTOM_NAME = (byte) 0xCA; // Wireless -> Panel
-    final static byte CMD_GET_UNKNOWN_CB = (byte) 0xCB; // 14 Wireless -> Panel
-    final static byte CMD_GET_UNKNOWN_D1 = (byte) 0xD1; // 0C Wireless -> Panel
+    final static byte CMD_GET_CIRCUIT_DEF = (byte) 0xCB; // 14 Wireless -> Panel
+    // (byte0 => circuit #)
+    final static byte CMD_GET_SCHEDULE = (byte) 0xD1; // 0C Wireless -> Panel
     final static byte CMD_GET_UNKNOWN_D6 = (byte) 0xD6; // 00 Wireless -> Panel
     final static byte CMD_GET_PANEL_PUMP_STATUS = (byte) 0xD7; // Wireless -> Panel
     final static byte CMD_GET_PUMP_CIRCUIT_SPEEDS = (byte) 0xD8; // Wireless -> Panel
@@ -106,6 +123,10 @@ class Const {
     final static long TIMEZONE_RAW_OFFSET_MILLIS = Calendar.getInstance().getTimeZone().getRawOffset();
     final static long MILLIS_PER_DAY = 24 * 60 * 60 * 1000;
     final static long TEN_MINUTES = 10 * 60 * 1000;
-    final static String[] WEEKDAYS = new String[] { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
-            "Saturday" };
+    final static String[] WEEKDAYS = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
+
+    // Circuit Functions
+    final static String[] CIRCUIT_FUNCTIONS = { "Generic", "Spa", "Pool", "Func3", "Func4", "Func5", "Func6", "Light",
+            "Func8", "Func9", "FuncA", "FuncB", "FuncC", "FuncD", "Spillway", "FuncF" };
+
 }

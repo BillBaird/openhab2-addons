@@ -182,7 +182,7 @@ public class MySqlLogger {
         }
     }
 
-    public void logMsg(Message msg) {
+    public void logMsg(Message msg, Panel panel) {
         if (!initialized || !enabled) {
             return;
         }
@@ -212,7 +212,7 @@ public class MySqlLogger {
             statement.setString(5, msg.getCommandStr());
             statement.setInt(6, msg.getPayloadLength());
             statement.setString(7, msg.getPayloadByteStr());
-            statement.setString(8, msg.getInterpretationStr());
+            statement.setString(8, msg.getInterpretationStr(panel));
 
             statement.executeUpdate();
 

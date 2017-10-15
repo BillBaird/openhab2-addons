@@ -318,7 +318,7 @@ public class EasyTouchHandler extends BaseThingHandler {
                     }
                 }
             }
-            msgLog.logMsg(cmd); // Log to Sql
+            msgLog.logMsg(cmd, panel); // Log to Sql
             m_outStream.write(cmd.asBytes());
             logger.debug("Sent: {}, requires ack={}", Utils.formatCommandBytes(cmd), ack != null);
             if (ack != null) {
