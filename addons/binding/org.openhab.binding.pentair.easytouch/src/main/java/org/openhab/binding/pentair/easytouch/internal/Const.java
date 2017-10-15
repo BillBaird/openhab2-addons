@@ -32,6 +32,7 @@ class Const {
     final static byte CMD_PUMP_STATUS = 0x07;
     final static byte CMD_TEMPERATURE_SET_POINTS = 0x08;
     final static byte CMD_CUSTOM_NAME = 0x0A;
+    final static byte CMD_PANEL_PUMP_STATUS = 0x17;
     final static byte CMD_PUMP_CIRCUIT_SPEEDS = 0x18;
 
     final static byte CMD_SET_DATETIME = (byte) 0x85;
@@ -42,13 +43,8 @@ class Const {
     final static byte CMD_GET_DATETIME = (byte) 0xC5;
     final static byte CMD_GET_TEMPERATURE_SET_POINTS = (byte) 0xC8; // Note sure of this one
     final static byte CMD_GET_CUSTOM_NAME = (byte) 0xCA;
+    final static byte CMD_GET_PANEL_PUMP_STATUS = (byte) 0xD7;
     final static byte CMD_GET_PUMP_CIRCUIT_SPEEDS = (byte) 0xD8;
-
-    // Command (CFI) values
-    final static byte CFI_PUMP_COMMAND = (byte) 0x01;
-    final static byte CFI_PUMP_SETCONTROL = (byte) 0x04;
-    final static byte CFI_PUMP_SETRUN = (byte) 0x06;
-    final static byte CFI_PUMP_STAT = (byte) 0x07;
 
     // Calendar constants
     final static long TIMEZONE_RAW_OFFSET_MILLIS = Calendar.getInstance().getTimeZone().getRawOffset();

@@ -117,7 +117,7 @@ public class MessageReader implements SerialPortEventListener {
                     state = State.H3;
                     break;
                 case H3:
-                    msg.cfi = (byte) b;
+                    msg.cmd = (byte) b;
                     checksumCalc += b;
                     state = State.Header;
                     break;

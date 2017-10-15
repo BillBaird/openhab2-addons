@@ -11,7 +11,7 @@ public class Message {
     private final EasyTouchHandler m_handler;
 
     public byte source;
-    public byte cfi;
+    public byte cmd;
     public byte dest;
     public byte other;
     public byte length;
@@ -27,9 +27,9 @@ public class Message {
         panel.handleAcknowledgement(this);
         if (dest == 0x0F && length == 29) {
             panel.consumePanelStatusMessage(payload);
-        } else if (cfi == Const.CFI_PUMP_STAT && dest == 0x10 && length == 15) {
+        } else if (cmd == Const.CMD_PUMP_STATUS && dest == 0x10 && length == 15) {
             panel.consumePumpStatusMessage(this);
-        } else if (cfi == Const.CFI_PUMP_SETRUN && dest == 0x10 && length == 01) {
+        } else if (cmd == Const.CMD_SET_RUN && dest == 0x10 && length == 01) {
             panel.consumePumpSetRunMessage(this);
             /*
              * } else if (cfi == Const.CFI_PUMP_COMMAND && dest == 0x10 && length == 02) {
@@ -41,7 +41,7 @@ public class Message {
     }
 
     public boolean matches(Message m) {
-        boolean result = length == m.length && cfi == m.cfi && source == m.source && dest == m.dest && other == m.other;
+        boolean result = length == m.length && cmd == m.cmd && source == m.source && dest == m.dest && other == m.other;
         if (result) {
             for (int i = length - 1; i >= 0; i--) {
                 result = result && (payload[i] == m.payload[i]);
@@ -60,7 +60,7 @@ public class Message {
             command[4] = other;
             command[5] = dest;
             command[6] = source;
-            command[7] = cfi;
+            command[7] = cmd;
             command[8] = length;
             for (int i = 0; i < payload.length; i++) {
                 command[9 + i] = (byte) (payload[i] & 0xFF);
@@ -72,7 +72,7 @@ public class Message {
 
     public String getHeaderByteStr() {
         return Utils.getByteStr(this.other) + " " + Utils.getByteStr(this.dest) + " " + Utils.getByteStr(this.source)
-                + " " + Utils.getByteStr(this.cfi);
+                + " " + Utils.getByteStr(this.cmd);
     }
 
     public String getSourceStr() {
@@ -88,7 +88,7 @@ public class Message {
     }
 
     public String getCommandStr() {
-        return Utils.getCommand(cfi);
+        return Utils.getCommand(cmd);
     }
 
     public int getPayloadLength() {
@@ -100,20 +100,56 @@ public class Message {
     }
 
     public String getInterpretationStr() {
-        return getCfiStr();
+        return getCmdStr();
     }
 
-    public String getPumpCommandStr() {
-        if (this.length >= 2) {
+    public String getPanelPumpAckStr() {
+        if (this.length == 4) {
             switch (payload[0] << 8 | payload[1]) {
                 case 0x02C4:
-                    return "Pump RPMs " + (payload[2] << 8 | payload[3]);
+                    return getDestStr() + " RPMs " + (payload[2] << 8 | payload[3]);
                 default:
-                    return "<Unknown Pump Command>";
+                    return "<Unknown Panel Pump Ack - " + getPayloadByteStr() + ">";
             }
         } else {
-            return "<Unknown Pump Command - short length>";
+            return "<Unknown Panel Pump Ack - unknown length>";
         }
+    }
+
+    public String getPumpPanelAckStr() {
+        if (this.length == 2) {
+            int rpms = payload[0] << 8 | payload[1];
+            if (rpms <= 3450) {
+                return getSourceStr() + " RPMs " + rpms;
+            } else {
+                return getSourceStr() + " state " + getPayloadByteStr();
+            }
+        } else {
+            return "<Unknown Pump Ack - unknown length>";
+        }
+    }
+
+    public String getPanelPumpStatusStr() {
+        String result;
+        if (payload[0] == 0x01) {
+            result = "Pump 0 - ";
+        } else if (payload[0] == 0x02) {
+            result = "Pump 1 - ";
+        } else {
+            result = "Pump <unknown>";
+        }
+        if (payload[13] == 0x00) {
+            result += "off";
+        } else {
+            if (payload[13] == 0x01) {
+                result += "on, ";
+            } else if (payload[13] == 0x0B) {
+                result += "priming, ";
+            }
+            result += (payload[6] << 8 | payload[7]) + " RPMs, " + (payload[4] << 8 | payload[5]) + " watts";
+        }
+        result += ", [1]=" + Utils.getByteStr(payload[1]) + ", [15]=" + Utils.getByteStr(payload[15]);
+        return result;
     }
 
     private String parseCustomName() {
@@ -167,12 +203,13 @@ public class Message {
         return result;
     }
 
-    public String getCfiStr() {
-        switch (this.cfi & 0xFF) {
+    public String getCmdStr() {
+        switch (this.cmd & 0xFF) {
             case Const.CMD_SET_ACK: // 0x01:
-                if ((Utils.isPanel(this.source) && Utils.isPump(this.dest))
-                        || (Utils.isPanel(this.dest) && Utils.isPump(this.source))) {
-                    return this.getPumpCommandStr();
+                if (Utils.isPanel(this.source) && Utils.isPump(this.dest)) {
+                    return this.getPanelPumpAckStr();
+                } else if (Utils.isPump(this.source) && Utils.isPanel(this.dest)) {
+                    return this.getPumpPanelAckStr();
                 } else {
                     return "Acknowledge " + Utils.getCommand(payload[0]);
                 }
@@ -195,6 +232,8 @@ public class Message {
                         + payload[2] + " - More UNKNOWN";
             case Const.CMD_CUSTOM_NAME: // 0x0A:
                 return "Custom Name " + payload[0] + " = " + parseCustomName();
+            case Const.CMD_PANEL_PUMP_STATUS: // 0x17:
+                return "PanelPumpStatus " + this.getPanelPumpStatusStr();
             case Const.CMD_PUMP_CIRCUIT_SPEEDS: // 0x18:
                 return "PumpCircuitSpeeds " + this.parsePumpCircuitSpeedMsg();
 
@@ -214,16 +253,18 @@ public class Message {
                 return "Get SetPoints? ";
             case Const.CMD_GET_CUSTOM_NAME & 0xFF: // 0xCA:
                 return "Get Custom Name";
+            case Const.CMD_GET_PANEL_PUMP_STATUS & 0xFF: // 0xD7:
+                return "Get Panel Pump Status";
             case Const.CMD_GET_PUMP_CIRCUIT_SPEEDS & 0xFF: // 0xD8:
                 return "Get PumpCircuitSpeeds";
             default:
-                return Utils.getCommand(this.cfi);
+                return Utils.getCommand(this.cmd);
         }
     }
 
     @Override
     public String toString() {
-        return this.getHeaderByteStr() + " - " + this.getAddressStr() + ": " + this.getCfiStr() +
+        return this.getHeaderByteStr() + " - " + this.getAddressStr() + ": " + this.getCmdStr() +
         // ", " + Utils.getByteStr(this.other) +
                 " (" + this.length + " bytes)";
     }

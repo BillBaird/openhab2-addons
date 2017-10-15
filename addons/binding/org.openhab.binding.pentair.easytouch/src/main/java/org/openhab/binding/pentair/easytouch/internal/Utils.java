@@ -235,8 +235,10 @@ public class Utils {
                 return "TemperatureSettings";
             case Const.CMD_CUSTOM_NAME: // 0x0A:
                 return "Custom Name";
+            case Const.CMD_PANEL_PUMP_STATUS: // 0x17:
+                return "PanelPumpStatus";
             case Const.CMD_PUMP_CIRCUIT_SPEEDS: // 0x18:
-                return "PumpSpeedSettings";
+                return "PumpCircuitSpeeds";
 
             case Const.CMD_SET_DATETIME & 0xFF: // 0x85:
                 return "SetDateTime";
@@ -253,6 +255,8 @@ public class Utils {
                 return "GetTemperatureSettings";
             case Const.CMD_GET_CUSTOM_NAME & 0xFF: // 0xCA:
                 return "GetCustomName";
+            case Const.CMD_GET_PANEL_PUMP_STATUS & 0xFF: // 0xD7:
+                return "GetPanelPumpStatus";
             case Const.CMD_GET_PUMP_CIRCUIT_SPEEDS & 0xFF: // 0xD8:
                 return "GetPumpCircuitSpeeds";
 
