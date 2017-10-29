@@ -107,6 +107,32 @@ public class Message {
         return getCmdStr(panel);
     }
 
+    public String getMsgTime() {
+        switch (this.cmd & 0xFF) {
+            case Const.CMD_PANEL_STATUS: // 0x02:
+                return String.format("%02d:%02d", payload[0], payload[1]);
+            case Const.CMD_PUMP_STATUS: // 0x07:
+                return String.format("%02d:%02d", payload[13], payload[14]);
+            case Const.CMD_SET_DATETIME & 0xFF: // 0x85:
+                return String.format("%02d:%02d", payload[0], payload[1]);
+            default:
+                return null;
+        }
+    }
+
+    public Integer getClockDrift() {
+        switch (this.cmd & 0xFF) {
+            case Const.CMD_PANEL_STATUS: // 0x02:
+                return (int) Panel.calcClockDiff(payload[0], payload[1]);
+            case Const.CMD_PUMP_STATUS: // 0x07:
+                return (int) Panel.calcClockDiff(payload[13], payload[14]);
+            case Const.CMD_SET_DATETIME & 0xFF: // 0x85:
+                return (int) Panel.calcClockDiff(payload[0], payload[1]);
+            default:
+                return null;
+        }
+    }
+
     public String getPanelPumpAckStr() {
         if (this.length == 4) {
             switch (payload[0] << 8 | payload[1]) {

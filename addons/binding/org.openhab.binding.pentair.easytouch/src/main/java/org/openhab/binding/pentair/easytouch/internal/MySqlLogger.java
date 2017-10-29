@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.Calendar;
 
 import org.openhab.binding.pentair.easytouch.config.EasyTouchConfig;
@@ -83,10 +84,10 @@ public class MySqlLogger {
             connection = DriverManager.getConnection(url, user, password);
             logger.debug("MySqlLogger: Connected to database {}", url);
 
-            String cmd = "CREATE TABLE IF NOT EXISTS PentairRawLog (" + "Id int NOT NULL AUTO_INCREMENT, "
-                    + "Time DATETIME, " + "RawHeader varchar(100), " + "Source varchar(20), " + "Dest varchar(20), "
-                    + "Command varchar(30), " + "Len int, " + "Payload varchar(200), "
-                    + "Interpretation varchar(20000), " + "PRIMARY KEY(Id));";
+            String cmd = "CREATE TABLE IF NOT EXISTS PentairRawLog (Id int NOT NULL AUTO_INCREMENT, "
+                    + "Time DATETIME NOT NULL, RawHeader varchar(100), SRC char(2), Source varchar(20), DST char(2), Dest varchar(20), "
+                    + "CMD char(2), Command varchar(30), Len int, Payload varchar(200), Interpretation varchar(10000), "
+                    + "PanelTime char(5), DriftSecs int, PRIMARY KEY(Id));";
             Statement st = connection.createStatement();
             st.executeUpdate(cmd);
             st.close();
@@ -201,18 +202,24 @@ public class MySqlLogger {
             return;
         }
 
-        String cmd = "INSERT INTO PentairRawLog(Time, RawHeader, Source, Dest, Command, Len, Payload, Interpretation) VALUES(?,?,?,?,?,?,?,?);";
+        String cmd = "INSERT INTO PentairRawLog(Time, RawHeader, SRC, Source, DST, Dest, CMD, Command, Len, Payload, Interpretation, PanelTime, DriftSecs) "
+                + "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?);";
         PreparedStatement statement = null;
         try {
             statement = connection.prepareStatement(cmd);
             statement.setTimestamp(1, new Timestamp(Calendar.getInstance().getTimeInMillis()));
             statement.setString(2, msg.getHeaderByteStr());
-            statement.setString(3, msg.getSourceStr());
-            statement.setString(4, msg.getDestStr());
-            statement.setString(5, msg.getCommandStr());
-            statement.setInt(6, msg.getPayloadLength());
-            statement.setString(7, msg.getPayloadByteStr());
-            statement.setString(8, msg.getInterpretationStr(panel));
+            statement.setString(3, Utils.getByteStr(msg.source));
+            statement.setString(4, msg.getSourceStr());
+            statement.setString(5, Utils.getByteStr(msg.dest));
+            statement.setString(6, msg.getDestStr());
+            statement.setString(7, Utils.getByteStr(msg.cmd));
+            statement.setString(8, msg.getCommandStr());
+            statement.setInt(9, msg.getPayloadLength());
+            statement.setString(10, msg.getPayloadByteStr());
+            statement.setString(11, msg.getInterpretationStr(panel));
+            statement.setString(12, msg.getMsgTime());
+            statement.setObject(13, msg.getClockDrift(), Types.INTEGER);
 
             statement.executeUpdate();
 
