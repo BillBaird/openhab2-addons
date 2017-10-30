@@ -337,18 +337,34 @@ public class Panel {
         }
     }
 
-    /*
-     * public void consumePumpCommandMessage(Message msg) {
-     * Pump pump = pumps[msg.source & 0x07];
-     * int[] payload = msg.payload;
-     * int rpms = payload[0] * 256 + payload[1];
-     * if (pump.rpms == null || pump.rpms != rpms) {
-     * pump.rpms = rpms;
-     * State state = new DecimalType(rpms);
-     * m_handler.updateState(pump.rpmsChannel, state);
-     * }
-     * }
-     */
+    public String getPanelStatusRunningStr(int[] payload) {
+        String result = "on (";
+        for (Circuit c : circuits) {
+            boolean onOff = (payload[c.inx] & c.mask) != 0;
+            if (onOff) {
+                // result += c.getName() + ", ";
+                result += "Circuit " + c.circuitNum + ", ";
+            }
+        }
+        for (Feature f : features) {
+            boolean onOff = (payload[f.inx] & f.mask) != 0;
+            if (onOff == true) {
+                // result += f.getName() + ", ";
+                result += "Feature " + f.featureNum + ", ";
+            }
+        }
+        if (result.endsWith(", ")) {
+            result = result.substring(0, result.length() - 2);
+        }
+        result += "), AirTemp=" + payload[18];
+        if (circuits[5].onOff != null && circuits[5].onOff == true) {
+            result += ", PoolTemp=" + payload[14];
+        }
+        if (circuits[0].onOff != null && circuits[0].onOff == true) {
+            result += ", SpaTemp=" + payload[15];
+        }
+        return result;
+    }
 
     public void consumePanelStatusMessage(int[] payload) {
         for (Circuit c : circuits) {

@@ -40,7 +40,8 @@ public class Message {
         } else if (cmd == Const.CMD_CIRCUIT_DEF) {
             panel.consumeCircuitDef(this);
         }
-        panel.logMsg(this);
+        panel.logMsg(this); // It is important this be called after actually consuming the message since some
+                            // interpretations depend on the circuit states which would have been just updated.
         panel.writeNewTime();
     }
 
@@ -159,6 +160,19 @@ public class Message {
         }
     }
 
+    public String getPumpStatusStr() {
+        String result = " - ";
+        if (payload[0] == 0x0A) {
+            result += "on, " + (payload[3] << 8 | payload[4]) + " RPMs, " + (payload[5] << 8 | payload[6]) + " watts";
+        } else if (payload[0] == 0x04) {
+            result += "off";
+        } else {
+            result += "<unknown>";
+        }
+        result += ", [0]=" + Utils.getByteStr(payload[0]) + ", [12]=" + Utils.getByteStr(payload[12]);
+        return result;
+    }
+
     public String getPanelPumpStatusStr() {
         String result = "Pump " + payload[0] + " - ";
         if (payload[13] == 0x00) {
@@ -270,8 +284,13 @@ public class Message {
                     return "Acknowledge " + Utils.getCommand(payload[0]);
                 }
             case Const.CMD_PANEL_STATUS: // 0x02:
-                return "PanelStatus " + payload[0] + ":" + payload[1] + " Diff: "
-                        + Panel.calcClockDiff(payload[0], payload[1]);
+                if (panel == null) {
+                    return "panel was null";
+                } else if (payload == null) {
+                    return "payload was null";
+                } else {
+                    return "PanelStatus " + panel.getPanelStatusRunningStr(payload);
+                }
             case Const.CMD_SET_CONTROL: // 0x04:
                 return "SetControl "
                         + (payload[0] == 0x00 ? "Local" : payload[0] == 0x0FF ? "Remote" : "<UnknownControl>");
@@ -281,8 +300,7 @@ public class Message {
             case Const.CMD_SET_RUN: // 0x06:
                 return "SetRun " + (payload[0] == 0x0A ? "Start" : payload[0] == 0x04 ? "Stop" : "<UnknownRun>");
             case Const.CMD_PUMP_STATUS: // 0x07:
-                return "PumpStatus " + payload[13] + ":" + payload[14] + " Diff: "
-                        + Panel.calcClockDiff(payload[13], payload[14]);
+                return this.getSourceStr() + " Status " + this.getPumpStatusStr();
             case Const.CMD_TEMPERATURE_SET_POINTS: // 0x08:
                 return "SetPoints? " + "Pool Set to " + payload[3] + ", Spa Set to " + payload[4] + ", Air Temp "
                         + payload[2] + " - More UNKNOWN";
