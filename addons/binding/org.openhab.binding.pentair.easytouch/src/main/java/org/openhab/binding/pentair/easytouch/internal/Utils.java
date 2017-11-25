@@ -253,7 +253,7 @@ public class Utils {
             case Const.CMD_SET_CIRCUIT_DEF & 0xFF: // 0x8B:
                 return "SetCircuitDef";
             case Const.CMD_SET_SCHEDULE & 0xFF: // 0x91
-                return "Se Schedule";
+                return "SetSchedule";
             case Const.CMD_SET_PUMP_CIRCUIT_SPEEDS & 0xFF: // 0x98:
                 return "SetPumpCircuitSpeeds";
 

@@ -254,7 +254,7 @@ public class Panel {
     public void consumeCircuitDef(Message msg) {
         int circuitNum = msg.payload[0];
         if (circuitNum <= 10) {
-            Circuit circuit = circuits[circuitNum];
+            Circuit circuit = circuits[circuitNum - 1];
             circuit.nameInx = msg.payload[2];
             circuit.funcInx = msg.payload[1] & 0x0F;
         } else {
@@ -343,14 +343,14 @@ public class Panel {
             boolean onOff = (payload[c.inx] & c.mask) != 0;
             if (onOff) {
                 // result += c.getName() + ", ";
-                result += "Circuit " + c.circuitNum + ", ";
+                result += "C" + c.circuitNum + "-" + c.getName() + ", ";
             }
         }
         for (Feature f : features) {
             boolean onOff = (payload[f.inx] & f.mask) != 0;
             if (onOff == true) {
                 // result += f.getName() + ", ";
-                result += "Feature " + f.featureNum + ", ";
+                result += "F" + f.featureNum + "-" + f.getName() + ", ";
             }
         }
         if (result.endsWith(", ")) {

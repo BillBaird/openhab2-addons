@@ -263,7 +263,7 @@ public class Message {
             result += String.format(", on %02d:%02d, off %02d:%02d", payload[2], payload[3], payload[4], payload[5]);
         } else if (payload[6] == 0x00) {
             if (payload[2] == 25) {
-                result += ", not configured";
+                result += String.format(", no schedule, egg timer %02d:%02d", payload[4], payload[5]);
             } else {
                 result += ", unexpected value " + Utils.getByteStr(payload[2]) + " at byte 2";
             }
